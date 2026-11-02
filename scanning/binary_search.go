@@ -1,5 +1,9 @@
 package scanning
 
+import (
+	"math"
+)
+
 // [easy] BinarySearch returns the index of target in the sorted slice xs, or -1.
 //
 // Background. The input is sorted, and that single fact allows the
@@ -44,6 +48,45 @@ package scanning
 // Expected: O(log n) — empirically exponent ~0
 // Input: not mutated
 func BinarySearch(xs []int, target int) int {
-	// TODO: implement
+	if len(xs) == 0 {
+		return -1
+	}
+	if len(xs) >= 1 {
+		if xs[0] == target {
+			return 0
+		}
+	}
+	b := 0
+	e := len(xs) - 1
+	for b != e {
+		mid := float64(b) + (float64(e)-float64(b))/float64(2)
+		i := int(math.Ceil(mid))
+		if i == len(xs) {
+			i--
+		}
+		// interval size
+		s := e - b
+
+		if s == 1 {
+			if xs[b] == target {
+				return b
+			}
+			if xs[e] == target {
+				return e
+			}
+		}
+		if xs[i] == target {
+			return i
+		}
+		if target > xs[i] {
+			b = i
+		} else {
+			if e == 1 {
+				e = 0
+			} else {
+				e = i
+			}
+		}
+	}
 	return -1
 }

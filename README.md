@@ -16,7 +16,7 @@ An algorithm is done only when both boxes are checked:
 | SelectionSort | easy | ✓ |
 | MergeSort | medium | - |
 | QuickSort | medium | - |
-| HeapSort | medium | - |
+| HeapSort | medium | ✓ |
 | RadixSort | hard | - |
 | TimSort | hard | - |
 
@@ -24,8 +24,8 @@ An algorithm is done only when both boxes are checked:
 
 | Algorithm | Difficulty | Done |
 |---|---|---|
-| LinearSearch | easy | - |
-| BinarySearch | easy | - |
+| LinearSearch | easy | ✓ |
+| BinarySearch | easy | ✓ |
 | Kadane | medium | - |
 | TwoPointerDedup | medium | - |
 | BoyerMooreMajority | medium | - |
