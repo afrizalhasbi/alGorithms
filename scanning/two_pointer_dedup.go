@@ -38,6 +38,30 @@ package scanning
 // Expected: O(n)
 // Input: mutated in place (only up to the returned length is meaningful)
 func TwoPointerDedup(xs []int) int {
-	// TODO: implement
-	return 0
+	if len(xs) == 0 {
+		return 0
+	}
+
+	// retained len
+	// consider this the begin
+	// index of the dupe slice
+	i := 1
+	// scanner len
+	// consider this the ending
+	// index of the dupe slice
+	j := 1
+	// if i == j, then theres no dupe slice
+
+	var prev = xs[0]
+	for j < len(xs) {
+		new := xs[j]
+		if new != prev {
+			xs[i] = new
+			prev = new
+			i++
+		}
+		j++
+	}
+
+	return i
 }
