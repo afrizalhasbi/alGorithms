@@ -5,13 +5,23 @@ package scanning
 //
 // Two passes: pair off candidates, then verify.
 // Steps:
-//  1. Pass 1 — voting: keep a candidate and a counter. Same value as the
-//     candidate: increment. Different: decrement. Counter hits 0: adopt the
-//     current item as the new candidate with counter 1.
-//  2. Pass 2 — verification: count actual occurrences of the candidate.
-//     More than n/2: return it and true; otherwise return false.
-//     The second pass is what makes the algorithm honest — without it,
-//     "A A B" style inputs produce a bogus winner.
+//  1. Pass one — voting. Sweep the slice once, carrying a current
+//     candidate and a counter. Before the first item there is no
+//     candidate: the first item becomes the candidate with a count of
+//     one. After that, each item either matches the candidate (count
+//     goes up), differs from it (count goes down), or arrives when the
+//     count has fallen to zero — in which case it displaces the old
+//     candidate and the count restarts at one.
+//  2. When the sweep finishes, the surviving candidate is the only
+//     value that could possibly be a majority — but that is only a
+//     claim at this point; nothing has proven it.
+//  3. Pass two — verification. Sweep the whole slice again, simply
+//     counting how often the candidate actually occurs. The scan is a
+//     plain count: it never stops early. If the candidate occurs more
+//     than half the time, return it as the majority; if it occurs
+//     exactly half the time or less, there is no majority.
+//  4. An empty slice has no candidate to vote on: report "no majority"
+//     without any voting at all.
 //
 // Notes:
 //   - Easy to code, subtle to prove: the majority element survives being

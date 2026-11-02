@@ -5,15 +5,21 @@ package hashing
 //
 // Multiple hash functions set bits; membership checks only read.
 // Steps:
-//  1. NewBloomFilter(n, fpRate): size the bit array m from the standard
-//     estimate m = -n*ln(p) / (ln2)^2 and k = (m/n)*ln2 hash functions.
-//     Allocate the bit slice, all false.
-//  2. Add(s): for each of the k hash functions, derive an independent hash
-//     from FNV1a (e.g. combine FNV1a(s) with a salt per function, or split
-//     one 32-bit hash into two halves and mix: h_i = h1 + i*h2) and set
-//     bit (h_i mod m).
-//  3. MayContain(s): recompute the k positions; return false if any bit is
-//     clear, true otherwise.
+//  1. Construction: choose the number of bits from the expected item
+//     count and the target false-positive rate using the standard
+//     formula, and from that the number of hash functions per item.
+//     Allocate the bit array, everything clear.
+//  2. Adding: derive the needed hash values from a single base hash
+//     of the item — combine the base hash with the function's number
+//     to get each independent variant (two different hashes can be
+//     mixed with the function index to produce all of them; this is
+//     the standard trick and avoids k separate hash functions). Each
+//     derived hash picks one bit, reduced into range by the remainder;
+//     set every one of those bits.
+//  3. Membership: recompute exactly the same set of bit positions for
+//     the query item. If every one of them is set, answer "maybe
+//     present"; if even one is clear, the item cannot have been added
+//     (adding never clears a bit), so answer "definitely not present".
 //
 // Notes:
 //   - False positives are inherent (bits are shared); false negatives are

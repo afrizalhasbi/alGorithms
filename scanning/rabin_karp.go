@@ -5,13 +5,23 @@ package scanning
 //
 // Rolling hash: compare hash values instead of strings, verify on match.
 // Steps:
-//  1. Hash the pattern and the first window of text.
-//  2. Slide the window one character at a time: subtract the leaving
-//     character's contribution, multiply by the base, add the entering
-//     character. The window hash updates in O(1) — never re-hash the window.
-//  3. When a window hash equals the pattern hash, compare the actual
-//     substring to rule out hash collisions.
-//  4. Return the index on a confirmed match; -1 if the scan ends.
+//  1. Handle the trivial shapes up front: an empty pattern matches at
+//     the very start of any text (including empty text); a pattern
+//     longer than the text can never match — report "not found".
+//  2. Hash the pattern once, and hash the first window of the text
+//     (the opening stretch as long as the pattern) with the same hash.
+//  3. Slide the window one character at a time. Each slide updates the
+//     window hash in constant time: remove the contribution of the
+//     character leaving at the front and add the character entering at
+//     the back. Never re-hash a whole window.
+//  4. After each slide, compare the window hash with the pattern hash.
+//     Equal hashes do not prove a match — different strings can share
+//     a hash — so on a hash hit, compare the actual window against the
+//     pattern character by character, and only then declare a match and
+//     return the window's position.
+//  5. The slide continues while the window still fits inside the text.
+//     Once the window would run off the end, the pattern is absent:
+//     report "not found".
 //
 // Notes:
 //   - Roll the hash manually with a small base/modulus; do not reach for

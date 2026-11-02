@@ -6,13 +6,22 @@ package hashing
 // Each node is hashed to many positions on a circle; a key belongs to the
 // first node position clockwise from its own hash.
 // Steps:
-//  1. NewRing(nodes): for each node, place `replicas` (e.g. 100) points on
-//     the ring: hash the node's name with a suffix ("node-3#17") using FNV1a.
-//     Keep a sorted slice of all ring positions (uint32 wraps around: that
-//     wraparound IS the circle).
-//  2. GetNode(key): hash the key, binary-search the sorted positions for the
-//     smallest position >= key's hash; wrap to positions[0] if none.
-//  3. Map the position back to its node (keep a parallel slice of owners).
+//  1. Construction: imagine a circle of hash values. Place many marks
+//     on the circle for each node — for each node, stamp the given
+//     number of copies of its name (a small distinguishing suffix per
+//     copy), hash each, and record the hash as a mark owned by that
+//     node. Keep all marks together in one sorted list, with a
+//     parallel list remembering each mark's owner. The hash naturally
+//     wraps around at its maximum: that wraparound is the circle.
+//  2. Lookup: hash the key to a position on the circle. Find the
+//     first mark at or after that position, going clockwise — a
+//     binary search over the sorted marks. If the key's position is
+//     past the last mark, the search wraps around to the very first
+//     mark. The owner of the mark found is the node that gets the key.
+//  3. The many marks per node (virtual nodes) are what spread the
+//     load evenly: with one mark per node, whichever node draws the
+//     largest empty stretch of circle takes a hugely disproportionate
+//     share of keys.
 //
 // Notes:
 //   - This is where packages meet: step 2 is binary search from scanning/,

@@ -4,16 +4,26 @@ package hashing
 //
 // All entries live in one flat slice; collisions walk to the next free slot.
 // Steps:
-//  1. NewOpenMap(sizeHint) allocates a slice of {key, val, occupied} slots,
-//     power-of-two length. Index with FNV1a(key) & (len-1).
-//  2. Put(key, val): probe forward from the hash index until an empty (or
-//     deleted, if you implement deletion) slot; write there. If the key is
-//     already present, update in place.
-//  3. Get(key): probe from the hash index, comparing keys, until you find it
-//     or hit an empty slot (absent).
-//  4. Track entries; when load factor exceeds ~0.7, grow: double the slice
-//     and reinsert every live entry. Linear probing degrades badly above 0.7
-//     because probes form clusters.
+//  1. Construction: allocate one flat array of slots, each holding a
+//     key, a value, and an occupied flag — all empty at first. Make
+//     the slot count a power of two, since slots are addressed by
+//     keeping the low bits of the key's hash.
+//  2. Putting: start at the slot the key hashes to. Walk forward one
+//     slot at a time until you reach a slot that either holds the same
+//     key (overwrite its value in place; nothing else changes) or is
+//     empty (write the entry there and count one more entry). The walk
+//     always succeeds: the load-factor rule below guarantees there is
+//     always an empty slot to find.
+//  3. Getting: start at the same slot and walk forward, comparing
+//     keys. Finding the key ends the search with its value. Reaching
+//     an empty slot ends the search with "absent" — an occupied slot
+//     with a different key just means the walk continues.
+//  4. Growing: after an insert, if entries have risen to about seven
+//     tenths of the slot count, move to a doubled slot array and
+//     reinsert every live entry at its position in the new array.
+//     Linear probing degrades sharply beyond that point because
+//     occupied slots clump into long runs; the headroom keeps the
+//     runs short.
 //
 // Notes:
 //   - Tombstones vs backward-shift deletion is the classic rabbit hole;

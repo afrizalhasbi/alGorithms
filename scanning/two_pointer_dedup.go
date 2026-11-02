@@ -6,11 +6,19 @@ package scanning
 // One slow pointer marking the end of the unique prefix, one fast pointer
 // scanning ahead.
 // Steps:
-//  1. If xs is empty, return 0.
-//  2. Slow pointer k = 1: everything before index k is unique and sorted.
-//  3. Fast pointer i scans from 1 to end. When xs[i] != xs[k-1], copy
-//     xs[i] into xs[k] and increment k.
-//  4. Return k. Items after index k hold leftover garbage — that is fine.
+//  1. An empty slice is trivially deduplicated: return zero.
+//  2. Think of the slice as two regions: a front region holding the
+//     unique items kept so far, and the rest being examined. At the
+//     start the front region holds just the first item (a single item
+//     is always unique).
+//  3. Examine the remaining items one at a time, in order. An item
+//     equal to the last kept item is a duplicate — skip it, leaving
+//     whatever garbage sits in its place. A different item is kept:
+//     copy it into the slot right after the front region and let the
+//     front region grow by one.
+//  4. When every item has been examined, the front region is the
+//     deduplicated slice; return its length. Nothing past it is
+//     meaningful.
 //
 // Notes:
 //   - This is the canonical "write index" pattern; it shows up everywhere

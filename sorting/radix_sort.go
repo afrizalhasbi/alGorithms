@@ -6,12 +6,22 @@ package sorting
 // Sort digit by digit from least significant to most significant, using a
 // stable counting sort per digit.
 // Steps:
-//  1. Find the maximum value; the number of hex digits k follows from it.
-//  2. For each digit position d = 0..k-1:
-//     a. Count how many items have each hex digit value (16 buckets).
-//     b. Turn counts into prefix sums (bucket boundaries).
-//     c. Scatter items into buckets in order; this must preserve current order.
-//  3. After the most significant digit, the slice is sorted.
+//  1. A slice with at most one item is already sorted; return it.
+//  2. Look at the largest value to decide how many hex-digit passes
+//     are needed: keep making passes while some item still has an
+//     unprocessed digit left, starting from the least significant digit
+//     and moving toward the most significant one.
+//  3. Each pass sorts the whole slice by that single digit, using a
+//     counting sort: first tally how many items carry each digit value;
+//     then turn the tallies into starting positions, so you know where
+//     the first item of each digit group belongs; then walk the slice
+//     from front to back, dropping every item into its group's next
+//     open slot in a scratch copy. Walking front to back is what keeps
+//     items with equal digits in their current relative order — the
+//     pass must be stable or the whole sort breaks. Finally copy the
+//     scratch back over the original.
+//  4. After the pass for the most significant digit, no passes remain
+//     and the slice is sorted.
 //
 // Notes:
 //   - Stability of each pass is not an optimization detail, it is required
