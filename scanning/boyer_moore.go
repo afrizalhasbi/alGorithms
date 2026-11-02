@@ -3,30 +3,42 @@ package scanning
 // [medium] BoyerMooreMajority returns the majority element of xs (appearing more than
 // n/2 times) and true, or (0, false) if no majority exists.
 //
-// Two passes: pair off candidates, then verify.
+// Background. A majority element is a value that occupies more than
+// half the positions of the slice. Strictly more than half: a value
+// appearing exactly half the time is not a majority (a slice like
+// one, one, two, two has none). The obvious approach counts every
+// distinct value, which needs extra memory for the counts.
+//
+// The Boyer-Moore vote gets the same answer in constant memory, in
+// two passes. The first pass maintains one candidate and a counter,
+// and works like pairing off items against each other: each item
+// either agrees with the candidate (the counter goes up) or cancels
+// one vote of it (the counter goes down). When the counter is
+// exhausted, the next item starts a new candidacy. If a majority
+// exists, it survives this process, because every one of its items
+// that gets cancelled took a non-majority item down with it, and
+// there are more of them than of everything else combined.
+//
+// The catch: the first pass only proves who would win if a majority
+// existed. Without a majority, the survivor is arbitrary, a leftover
+// of the pairing. So a second pass is required, simply counting how
+// often the survivor actually occurs. That check is what makes the
+// algorithm honest; skipping it gives wrong answers on inputs like
+// A, A, B.
+//
 // Steps:
-//  1. Pass one — voting. Sweep the slice once, carrying a current
-//     candidate and a counter. Before the first item there is no
-//     candidate: the first item becomes the candidate with a count of
-//     one. After that, each item either matches the candidate (count
-//     goes up), differs from it (count goes down), or arrives when the
-//     count has fallen to zero — in which case it displaces the old
-//     candidate and the count restarts at one.
-//  2. When the sweep finishes, the surviving candidate is the only
-//     value that could possibly be a majority — but that is only a
-//     claim at this point; nothing has proven it.
-//  3. Pass two — verification. Sweep the whole slice again, simply
-//     counting how often the candidate actually occurs. The scan is a
-//     plain count: it never stops early. If the candidate occurs more
-//     than half the time, return it as the majority; if it occurs
-//     exactly half the time or less, there is no majority.
-//  4. An empty slice has no candidate to vote on: report "no majority"
-//     without any voting at all.
+//  1. An empty slice has no candidate: report "no majority".
+//  2. First pass, over the whole slice: no candidate yet means the
+//     current item becomes the candidate with count one; otherwise
+//     the count moves up on a match and down on a mismatch, and a
+//     count reaching zero hands candidacy to the next item.
+//  3. Second pass, over the whole slice: count occurrences of the
+//     candidate. The scan never stops early.
+//  4. More than half: return the candidate and true. Otherwise return
+//     false. An empty slice also returns false.
 //
 // Notes:
-//   - Easy to code, subtle to prove: the majority element survives being
-//     paired off against everything else, because it outnumbers them all.
-//   - O(n) time, O(1) space, single pass over the input twice.
+//   - O(n) time, O(1) space, two passes over the input.
 //
 // Expected: O(n)
 // Input: not mutated

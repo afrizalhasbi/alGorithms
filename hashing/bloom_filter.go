@@ -3,29 +3,51 @@ package hashing
 // [hard] BloomFilter is a probabilistic set that can say "definitely not present"
 // or "maybe present", using a fixed bit budget.
 //
-// Multiple hash functions set bits; membership checks only read.
+// Background. A Bloom filter is a set that gives up exactness in one
+// direction only. Asking whether an item was added can produce a
+// false positive (the answer is "maybe present" for an item that was
+// never added), but never a false negative (an item that was added
+// is always reported as present). The reason is structural: adding
+// sets bits and nothing ever clears a bit, so any added item keeps
+// finding its own bits set forever.
+//
+// The filter is a plain array of bits, all clear at the start. An
+// item does not claim one bit but several: several hash functions
+// each pick one bit, and adding the item sets all of them. A query
+// recomputes the same positions and is only willing to say "present"
+// if every one of those bits is set. A single clear bit is proof the
+// item was never added, because if it had been, that bit would have
+// been set.
+//
+// False positives happen when all of an item's bits happen to be set
+// by a mixture of other items. The interesting part is that the rate
+// of that accident is predictable from the size of the bit array,
+// the number of items, and the number of hash functions, which is
+// what the sizing formula encodes. More hash functions mean fewer
+// false positives but a faster fill-up; there is an optimum, and the
+// formula gives it.
+//
+// Deriving several hash functions from one base hash is standard
+// (the Kirsch-Mitzenmacher trick): take one hash of the item, split
+// or mix it into two values, and combine them with the function's
+// index to produce each variant. No separate hash functions needed.
+//
 // Steps:
-//  1. Construction: choose the number of bits from the expected item
-//     count and the target false-positive rate using the standard
-//     formula, and from that the number of hash functions per item.
-//     Allocate the bit array, everything clear.
-//  2. Adding: derive the needed hash values from a single base hash
-//     of the item — combine the base hash with the function's number
-//     to get each independent variant (two different hashes can be
-//     mixed with the function index to produce all of them; this is
-//     the standard trick and avoids k separate hash functions). Each
-//     derived hash picks one bit, reduced into range by the remainder;
-//     set every one of those bits.
-//  3. Membership: recompute exactly the same set of bit positions for
-//     the query item. If every one of them is set, answer "maybe
-//     present"; if even one is clear, the item cannot have been added
-//     (adding never clears a bit), so answer "definitely not present".
+//  1. Construction: from the expected item count and the target
+//     false-positive rate, compute the bit array length and the
+//     number of hash functions with the standard formula. Allocate
+//     the bits, all clear.
+//  2. Add: compute the base hash of the item, derive the k variant
+//     hashes from it, reduce each into range by taking the remainder
+//     against the bit count, and set all k bits.
+//  3. MayContain: derive the same k positions. If even one bit is
+//     clear, return false. If all are set, return true.
 //
 // Notes:
-//   - False positives are inherent (bits are shared); false negatives are
-//     impossible — a bit set by Add is never cleared.
-//   - Deriving k hashes from one base hash (the h1 + i*h2 trick) is a real
-//     technique (Kirsch–Mitzenmacher); no crypto needed.
+//   - The test adds ten thousand items, then checks that none of
+//     them is ever reported absent (a false negative is a hard bug),
+//     and that the fraction of false positives on absent items lands
+//     near the 1% target.
 //
 // Expected: O(k) = O(1) per op
 // Input: not mutated

@@ -2,26 +2,36 @@ package scanning
 
 // [medium] Kadane returns the maximum sum of any contiguous subarray of xs.
 //
-// One pass, tracking the best subarray ending at the current position.
-// Steps:
-//  1. Fix the convention first, because the tests depend on it: the
-//     empty subarray counts as a valid answer and sums to zero. So the
-//     result is never below zero, and an empty or all-negative input
-//     gives zero.
-//  2. Sweep the slice once, carrying two running values: the best sum
-//     of any subarray that ends exactly at the previous position, and
-//     the best answer seen so far. Both start at zero.
-//  3. At each item, decide: does the best subarray ending here extend
-//     the one from before, or does it start fresh at this item? Extend
-//     unless the running sum before this item is negative — a negative
-//     prefix only drags the item down, so dropping it is always safe.
-//     Then fold the result into the best-so-far.
-//  4. The sweep runs to the end of the slice with no early exit; the
-//     best-so-far is then the answer.
+// Background. A subarray is a stretch of consecutive items of the
+// slice. Contiguous means the items sit next to each other with no
+// gaps; the answer can never skip an item in the middle. The task is
+// to find the stretch with the largest total. There is an obvious
+// O(n^2) way: try every starting point and extend it to every ending
+// point. Kadane's algorithm gets the same answer in one pass by
+// never looking back.
 //
-// Notes:
-//   - The core insight: a negative running prefix can never help, so dropping
-//     it is always safe. That is the whole proof of correctness.
+// The idea: for each position, what is the best subarray that ends
+// exactly there? It either extends the best subarray ending at the
+// previous position, or it starts fresh at this position, and the
+// better of the two is the answer. Starting fresh wins exactly when
+// the running sum carried from before is negative: a negative prefix
+// only drags the current item down, so dropping it is always safe
+// and never loses a better answer. That is the whole correctness
+// argument.
+//
+// Convention (matches the tests): the empty subarray is allowed and
+// sums to zero. The result is therefore never negative, and an empty
+// or all-negative input gives zero.
+//
+// Steps:
+//  1. Carry two values through one pass: the best subarray sum ending
+//     at the previous position, and the best sum seen anywhere so
+//     far. Both start at zero.
+//  2. At each item: extend-or-restart as described above to get the
+//     best sum ending here, then fold it into the best sum seen so
+//     far.
+//  3. When the pass ends, the best-so-far is the answer. There is no
+//     early exit.
 //
 // Expected: O(n)
 // Input: not mutated

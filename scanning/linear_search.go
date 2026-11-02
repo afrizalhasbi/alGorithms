@@ -2,18 +2,26 @@ package scanning
 
 // [easy] LinearSearch returns the index of target in xs, or -1 if absent.
 //
-// Scan left to right and compare every item. This is the fully implemented
-// reference for the exercise pattern: read the doc, make the complexity test
-// pass, keep the implementation minimal.
+// Background. Without any structure on the input (the slice is not
+// sorted, so nothing can be skipped), the only correct method is to
+// look at every item until the target turns up. That is linear
+// search, and it is the baseline every faster search is measured
+// against. This is also the fully implemented reference for the
+// exercise pattern: read the doc, make the complexity test pass,
+// keep the implementation minimal.
 //
 // Steps:
-// 1. For i from 0 to len(xs)-1, compare xs[i] with target.
-// 2. On the first match, return i immediately.
-// 3. If the scan finishes without a match, return -1.
+//  1. Walk the slice from front to back, comparing each item with the
+//     target.
+//  2. The first equal item ends the search immediately; return its
+//     position. Early exit matters: it is what makes an early target
+//     cheap and a late or absent target expensive.
+//  3. If the walk reaches the end without a match, the target is not
+//     present: return -1.
 //
 // Notes:
-//   - The worst case is target absent (or last): it forces a full scan, and
-//     that is exactly what the complexity test measures.
+//   - The worst case is target absent (or last): it forces a full
+//     scan, and that is exactly what the complexity test measures.
 //
 // Expected: O(n)
 // Input: not mutated

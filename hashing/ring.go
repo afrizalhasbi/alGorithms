@@ -3,31 +3,52 @@ package hashing
 // [hard] Ring is consistent hashing: assign keys to nodes so that adding/removing
 // a node only remaps ~1/n of the keys.
 //
-// Each node is hashed to many positions on a circle; a key belongs to the
-// first node position clockwise from its own hash.
+// Background. The problem: a cluster of cache servers, and every key
+// must go to one of them. The obvious answer, hash the key and take
+// the remainder against the node count, breaks when a node joins or
+// leaves: the remainder changes for nearly every key, so nearly
+// every key moves to a different server and caches go cold
+// everywhere. Consistent hashing gets the remapping down to about
+// one nth of the keys.
+//
+// The trick is to stop dividing by the node count. Instead, hash
+// both the nodes and the keys onto the same number line that wraps
+// around at the top of the hash range (that wraparound is what makes
+// it a circle). Each key belongs to the first node mark it meets
+// moving clockwise from its own position. A node now "owns" the arc
+// between its mark and the previous node's mark. When a node
+// leaves, only the keys on its arc move to the next node; everyone
+// else is untouched. Adding a node steals one arc's worth of keys,
+// same idea.
+//
+// One mark per node is still not enough: the marks land at random
+// spots on the circle, and with few nodes one of them is likely to
+// draw a huge arc and take a hugely disproportionate share of keys.
+// The fix is virtual nodes: stamp each node on the circle many
+// times, under slightly different names, so each node owns many
+// small arcs instead of one big one. Randomness averages out and
+// the loads even up.
+//
 // Steps:
-//  1. Construction: imagine a circle of hash values. Place many marks
-//     on the circle for each node — for each node, stamp the given
-//     number of copies of its name (a small distinguishing suffix per
-//     copy), hash each, and record the hash as a mark owned by that
-//     node. Keep all marks together in one sorted list, with a
-//     parallel list remembering each mark's owner. The hash naturally
-//     wraps around at its maximum: that wraparound is the circle.
-//  2. Lookup: hash the key to a position on the circle. Find the
-//     first mark at or after that position, going clockwise — a
-//     binary search over the sorted marks. If the key's position is
-//     past the last mark, the search wraps around to the very first
-//     mark. The owner of the mark found is the node that gets the key.
-//  3. The many marks per node (virtual nodes) are what spread the
-//     load evenly: with one mark per node, whichever node draws the
-//     largest empty stretch of circle takes a hugely disproportionate
-//     share of keys.
+//  1. Construction: for each node, hash its name with a distinguishing
+//     suffix once per replica, producing that many marks. Keep all
+//     marks in one sorted list (hash values are plain unsigned
+//     integers; the wraparound at the top of the range is the circle
+//     closing) with a parallel list of which node owns each mark.
+//  2. Lookup: hash the key and find the first mark at or after that
+//     position in the sorted list. The owner of that mark is the
+//     answer. If the key's hash is past the last mark, wrap around to
+//     the first mark.
+//  3. The lookup is a binary search over the sorted marks, so it gets
+//     slower only logarithmically as nodes are added.
 //
 // Notes:
-//   - This is where packages meet: step 2 is binary search from scanning/,
-//     step 1 uses FNV1a. Algorithms compose.
-//   - Replicas (virtual nodes) smooth out load imbalance; try replicas=1
-//     first and watch how unfair it is, then bump it up.
+//   - This is where packages meet: the lookup is a binary search
+//     from scanning/, the hashing is FNV1a from this package.
+//     Algorithms compose.
+//   - Try replicas of one first and watch how unfair the load is,
+//     then raise it. The test requires no node to exceed half the
+//     keys with 100 replicas.
 //
 // Expected: O(log n) lookup in ring positions
 // Input: not mutated

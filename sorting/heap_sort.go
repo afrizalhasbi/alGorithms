@@ -2,27 +2,46 @@ package sorting
 
 // [medium] HeapSort returns xs sorted in ascending order.
 //
-// Build a max-heap, then repeatedly extract the maximum.
+// Background. A heap is a way of organizing items so that the largest
+// one is always at the front. It is a binary tree drawn inside the
+// slice itself: the item at each position has its two children a
+// fixed distance further back, so no pointers or extra memory are
+// needed, the positions in the slice are the tree. The heap
+// condition says every item must be at least as large as its
+// children. That condition does not sort the slice, but it forces
+// the largest item of all to sit at the front.
+//
+// The heap does not exist at the start; the input is in arbitrary
+// order. The algorithm has two phases: first rearrange the slice
+// into a heap, then repeatedly remove the largest item. Removing
+// shrinks the heap and grows a sorted region at the back of the
+// slice, until the heap is gone and the slice is sorted.
+//
 // Steps:
-//  1. First understand the repair operation, since both later phases
-//     depend on it. A section of the slice is treated as a heap: each
-//     item has two children beneath it. To repair a node, compare it
-//     with its children; if the node is smaller than its largest child,
-//     swap the two and repair the child's position in turn. Stop when
-//     the node has no children, or when it is already at least as large
-//     as both of them.
-//  2. Build the heap: repair every parent node, starting from the last
-//     parent in the slice and working backwards to the root. Working
-//     backwards matters: by the time a node is repaired, everything
-//     below it is already a valid heap.
-//  3. Extract repeatedly. The maximum is always at the root. Swap the
-//     root with the last item of the heap, shrink the heap by that one
-//     item (it is now in its final place, sorted), and repair the new
-//     root. Repeat, shrinking one item at a time, until the heap is
-//     empty and the whole slice is sorted.
+//  1. Repairing an item: compare an item with its children. If it is
+//     smaller than one of them, swap it with the larger of the two
+//     and repeat the comparison at the child's new position. Stop
+//     when the item has no children, or when it is at least as large
+//     as both of them. Each repair fixes one path from top to bottom.
+//  2. Build the heap: repair every item that has children, starting
+//     from the last parent and moving toward the front of the slice.
+//     Working from the back matters: when an item is repaired,
+//     everything below it has already been repaired, so each repair
+//     has less and less to fix. When this phase ends the whole slice
+//     satisfies the heap condition.
+//  3. Extract: the front of the heap is the largest remaining item.
+//     Swap it with the last item of the heap, count the heap as one
+//     item shorter, and repair the front item (the swap may have put
+//     a small item at the front, breaking the heap condition there).
+//     The extracted item is now in its final sorted position, behind
+//     the heap.
+//  4. Repeat the extraction until the heap is empty. The sorted
+//     region then covers the whole slice.
 //
 // Notes:
-//   - Children of node i live at 2i+1 and 2i+2; no pointers needed.
+//   - Children of an item sit at fixed positions (double the
+//     position, plus one and plus two), which is why no pointers
+//     are needed.
 //   - O(n log n) on every input shape, O(1) auxiliary space.
 //   - Not stable.
 //

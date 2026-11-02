@@ -2,24 +2,33 @@ package hashing
 
 // [easy] FNV1a returns the 32-bit FNV-1a hash of s.
 //
-// A tiny non-cryptographic hash: multiply-then-xor over each byte.
+// Background. A hash function turns a string into a fixed-size
+// number, with the property that similar inputs produce unrelated
+// outputs. It is used to scatter keys across a hash table.
+// FNV-1a is one of the simplest usable hashes: a running value
+// starts at a fixed constant and is transformed once per input byte.
+// Each byte is mixed in with an exclusive-or and then the whole
+// value is multiplied by a fixed odd constant. The multiplication is
+// what spreads the change across all bits of the value, so after a
+// few bytes every output bit depends on many input bytes.
+//
+// The order matters and is the only real trap here: the exclusive-or
+// comes before the multiply. Doing it the other way round gives the
+// older FNV-1, which has weaker scattering and fails the test
+// vectors.
 //
 // Steps:
-//  1. Begin from a fixed starting value (the offset basis).
-//  2. Take the input one byte at a time, in order. For each byte: first
-//     mix the byte into the current value with an exclusive-or, then
-//     multiply the result by a fixed odd constant, letting the
-//     arithmetic wrap around at the word size. The xor comes before
-//     the multiply — that ordering is the "1a" in FNV-1a, and swapping
-//     it gives the older, weaker FNV-1.
-//  3. When every byte has been mixed in, the current value is the hash.
-//     An empty input skips the loop entirely and returns the basis
-//     unchanged.
+//  1. Start the running value at the offset basis constant.
+//  2. For each byte of the input, in order: exclusive-or the byte
+//     into the running value, then multiply by the prime constant,
+//     letting the arithmetic wrap around at 32 bits.
+//  3. After the last byte, the running value is the hash. An empty
+//     input skips the loop and returns the basis unchanged.
 //
 // Notes:
-//   - The xor comes *before* the multiply (that is the "1a" in FNV-1a);
-//     swapping the two gives the older, weaker FNV-1.
-//   - Every input byte changes the result: avalanche by construction.
+//   - The test checks known FNV-1a vectors, so constants must be
+//     exact: offset basis 2166136261, prime 16777619.
+//   - No complexity test: O(len(s)) per key, no shape dependence.
 //
 // Expected: O(len(s)) per key
 // Input: not mutated

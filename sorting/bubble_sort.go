@@ -4,24 +4,36 @@ import "slices"
 
 // [easy] BubbleSort returns xs sorted in ascending order.
 //
-// Repeatedly sweep the slice, swapping adjacent out-of-order pairs.
+// Background. A pass walks the slice from front to back, comparing
+// each neighboring pair and swapping the two when they are out of
+// order. One pass does not sort the slice, but it guarantees that
+// the largest item has been moved at least one step further back
+// per comparison, so by the end of a pass the largest item of the
+// whole slice has reached the back. That item is then in its final
+// position for good.
+//
+// Sorting is just repeating passes, each one able to ignore one more
+// item at the back because it is already final. The slice can be
+// sorted before the passes run out, and there is an easy way to
+// notice: if a whole pass performs no swaps, nothing was out of
+// order, so the slice is sorted and the algorithm can stop. That
+// early exit is the difference between a best case of O(n) on
+// already-sorted input and paying the full quadratic number of
+// passes every time.
+//
 // Steps:
-//  1. Each pass walks the unsorted part of the slice from front to
-//     back, comparing each pair of neighbors and swapping them when
-//     they are out of order.
-//  2. After a full pass, the largest item of the unsorted part has
-//     been carried to its end and is in its final place; the next pass
-//     can ignore it. (If you track this, each pass is one item shorter
-//     than the last; if you do not, the sort is still correct, just
-//     does redundant work.)
-//  3. Stop as soon as a whole pass performs no swaps — nothing was out
-//     of order, so the slice is sorted. This early exit is what gives
-//     the linear best case on already-sorted input; without it every
-//     input pays for the full quadratic number of passes.
+//  1. Each pass: walk the unsorted part of the slice, compare each
+//     pair of neighbors, and swap them when they are out of order.
+//  2. After a pass, the largest item of the unsorted part sits at its
+//     end, final. Shrink the unsorted part by that one item.
+//  3. If a pass performed no swaps, stop. Otherwise repeat while the
+//     unsorted part has items in it.
 //
 // Notes:
-//   - The early exit (step 3) is what gives the O(n) best case on sorted input.
-//   - Stable: equal items keep their relative order.
+//   - Stable: equal neighbors are never swapped, so equal items keep
+//     their relative order.
+//   - The test measures both the quadratic average case and the
+//     linear best case, so the early exit is required, not optional.
 //
 // Expected: best O(n), average/worst O(n^2)
 // Input: mutated in place
