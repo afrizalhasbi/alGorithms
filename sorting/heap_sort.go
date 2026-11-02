@@ -48,6 +48,61 @@ package sorting
 // Expected: best/average/worst O(n log n)
 // Input: mutated in place
 func HeapSort(xs []int) []int {
-	// TODO: implement
-	return nil
+	if len(xs) == 0 {
+		return xs
+	}
+
+	// heap size
+	s := len(xs)
+	for s > 0 {
+		// index of last parent
+		i := s/2 - 1
+		for i >= 0 {
+			repair(xs, i, s)
+			// parents are contiguous
+			i--
+		}
+
+		// swap heap front with heap end
+		head := xs[0]
+		xs[0] = xs[s-1]
+		xs[s-1] = head
+
+		// heap is 1 item smaller
+		s--
+		// repair the front
+		repair(xs, 0, s)
+	}
+
+	// println("No panic")
+	return xs
+}
+
+func repair(xs []int, i int, s int) {
+	par := xs[i]
+	p := 2*i + 1
+	q := 2*i + 2
+
+	// early stop if no child
+	if p >= s {
+		return
+	}
+	ch1 := xs[p]
+	r := p
+	var cand = ch1
+
+	if q < s {
+		// choose whichever child is bigger
+		if ch1 < xs[q] {
+			cand = xs[q]
+			r = q
+		}
+	} else {
+	}
+	if par < cand {
+		xs[r] = par
+		xs[i] = cand
+		repair(xs, r, s)
+	} else {
+	}
 }
