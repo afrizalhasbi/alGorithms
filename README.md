@@ -11,33 +11,33 @@ An algorithm is done only when both boxes are checked:
 
 | Algorithm | Difficulty | Done |
 |---|---|---|
-| BubbleSort | easy | [ ] |
-| InsertionSort | easy | [ ] |
-| SelectionSort | easy | [ ] |
-| MergeSort | medium | [ ] |
-| QuickSort | medium | [ ] |
-| HeapSort | medium | [ ] |
-| RadixSort | hard | [ ] |
-| TimSort | hard | [ ] |
+| BubbleSort | easy | - |
+| InsertionSort | easy | - |
+| SelectionSort | easy | - |
+| MergeSort | medium | - |
+| QuickSort | medium | - |
+| HeapSort | medium | - |
+| RadixSort | hard | - |
+| TimSort | hard | - |
 
 ## scanning
 
 | Algorithm | Difficulty | Done |
 |---|---|---|
-| LinearSearch | easy | [x] |
-| BinarySearch | easy | [ ] |
-| Kadane | medium | [ ] |
-| TwoPointerDedup | medium | [ ] |
-| BoyerMooreMajority | medium | [ ] |
-| KMP | hard | [ ] |
-| RabinKarp | hard | [ ] |
+| LinearSearch | easy | - |
+| BinarySearch | easy | - |
+| Kadane | medium | - |
+| TwoPointerDedup | medium | - |
+| BoyerMooreMajority | medium | - |
+| KMP | hard | - |
+| RabinKarp | hard | - |
 
 ## hashing
 
 | Algorithm | Difficulty | Done |
 |---|---|---|
-| FNV1a | easy | [ ] |
-| ChainMap | medium | [ ] |
-| OpenMap | medium | [ ] |
-| BloomFilter | hard | [ ] |
-| Ring | hard | [ ] |
+| FNV1a | easy | - |
+| ChainMap | medium | - |
+| OpenMap | medium | - |
+| BloomFilter | hard | - |
+| Ring | hard | - |
