@@ -41,3 +41,56 @@ An algorithm is done only when both boxes are checked:
 | OpenMap | medium | - |
 | BloomFilter | hard | - |
 | Ring | hard | - |
+
+## numerics
+
+| Algorithm | Difficulty | Done |
+|---|---|---|
+| KahanSum | easy | - |
+| NeumaierSum | easy | - |
+| NearEqual | easy | - |
+| SafeLog/SafeExp | easy | - |
+| Horner | easy | - |
+| Welford | medium | - |
+| TaylorExp | medium | - |
+| LogSumExp | medium | - |
+
+## statistics
+
+| Algorithm | Difficulty | Done |
+|---|---|---|
+| DiscreteExpectation | easy | - |
+| BayesPosterior | easy | - |
+| BinomialPMF | easy | - |
+| CumulativeDistribution | medium | - |
+| KDE1D | medium | - |
+| EMBinomial | hard | - |
+| EMMultinomial | hard | - |
+
+## calculus_scalar
+
+| Algorithm | Difficulty | Done |
+|---|---|---|
+| Bisection | easy | - |
+| NewtonRoot | easy | - |
+| FixedPoint | easy | - |
+| GradientDescent | easy | - |
+| CentralDifference | easy | - |
+| SecantMethod | medium | - |
+| NewtonMinimize | medium | - |
+| GoldenSection | medium | - |
+| MMQuartic | hard | - |
+
+*Note* : All derivatives are hardcoded in the test suite.
+
+## sampling
+
+
+| Algorithm | Difficulty | Done |
+|---|---|---|
+| InverseDiscrete | medium | - |
+| SampleExponential | medium | - |
+| SampleTriangular | medium | - |
+| BoxMuller | medium | - |
+| RejectionSample | medium | - |
+| MetropolisHastings1D | hard | - |

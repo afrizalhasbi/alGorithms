@@ -1,0 +1,6 @@
+{
+ "target": "normal(0,1)",
+ "proposalHalfWidth": 1.0,
+ "expectedAccept": 0.6366197723675814,
+ "note": "expectedAccept is only a band anchor; test asserts 0.2..0.8"
+}
