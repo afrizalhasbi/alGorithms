@@ -54,15 +54,16 @@ func HeapSort(xs []int) []int {
 
 	// heap size
 	s := len(xs)
-	for s > 0 {
-		// index of last parent
-		i := s/2 - 1
-		for i >= 0 {
-			repair(xs, i, s)
-			// parents are contiguous
-			i--
-		}
+	// index of last parent
+	i := s/2 - 1
 
+	for i >= 0 {
+		repair(xs, i, s)
+		// parents are contiguous
+		i--
+	}
+
+	for s > 0 {
 		// swap heap front with heap end
 		head := xs[0]
 		xs[0] = xs[s-1]
@@ -74,7 +75,6 @@ func HeapSort(xs []int) []int {
 		repair(xs, 0, s)
 	}
 
-	// println("No panic")
 	return xs
 }
 
