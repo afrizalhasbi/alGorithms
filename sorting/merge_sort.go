@@ -15,7 +15,7 @@ package sorting
 //   - Stable if you prefer the left half on ties.
 //
 // Expected: best/average/worst O(n log n)
-// Input: not mutated
+// Input: mutated in place
 func MergeSort(xs []int) []int {
 	// TODO: implement
 	return nil

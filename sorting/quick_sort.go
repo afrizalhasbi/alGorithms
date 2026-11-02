@@ -4,12 +4,11 @@ package sorting
 //
 // Partition around a pivot, then recurse on the two sides.
 // Steps:
-//  1. Copy xs so the caller's slice is not mutated.
-//  2. Choose a pivot using a deterministic pseudo-random index
+//  1. Choose a pivot using a deterministic pseudo-random index
 //     (seed a rand.Rand once per call chain).
-//  3. Partition: items < pivot to the left, items >= pivot to the right;
+//  2. Partition: items < pivot to the left, items >= pivot to the right;
 //     the pivot lands in its final position.
-//  4. Recurse on both sides.
+//  3. Recurse on both sides.
 //
 // Notes:
 //   - Sorted or all-equal input is the classic worst case for *naive* pivot
@@ -18,7 +17,7 @@ package sorting
 //     avoid extra allocations.
 //
 // Expected: best/average O(n log n), worst O(n^2) (rare with random pivots)
-// Input: not mutated
+// Input: mutated in place
 func QuickSort(xs []int) []int {
 	// TODO: implement
 	return nil

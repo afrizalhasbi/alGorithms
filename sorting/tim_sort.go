@@ -5,12 +5,11 @@ package sorting
 // Real-world sorting strategy: find naturally sorted "runs", extend short
 // ones with insertion sort, then merge runs pairwise.
 // Steps:
-//  1. Copy xs so the caller's slice is not mutated.
-//  2. Walk the slice and identify maximal ascending (or strictly descending,
+//  1. Walk the slice and identify maximal ascending (or strictly descending,
 //     which you reverse) runs. A descending run must be strictly decreasing.
-//  3. Any run shorter than a minimum run size (e.g. 32) gets extended with
+//  2. Any run shorter than a minimum run size (e.g. 32) gets extended with
 //     binary insertion sort up to that size.
-//  4. Merge runs pairwise (left-to-right) until one run remains.
+//  3. Merge runs pairwise (left-to-right) until one run remains.
 //
 // Notes:
 //   - The hard part is the merging discipline; a simple left-to-right merge
@@ -20,7 +19,7 @@ package sorting
 //   - Stable.
 //
 // Expected: best O(n), average/worst O(n log n)
-// Input: not mutated
+// Input: mutated in place
 func TimSort(xs []int) []int {
 	// TODO: implement
 	return nil

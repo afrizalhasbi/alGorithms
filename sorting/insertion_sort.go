@@ -4,7 +4,7 @@ package sorting
 //
 // Grow a sorted prefix one item at a time, like sorting a hand of cards.
 // Steps:
-// 1. Copy xs so the caller's slice is not mutated.
+// 1. Sort xs in place, growing a sorted prefix one item at a time.
 // 2. For each index i, take item xs[i] as the "key".
 // 3. Shift every larger item in the sorted prefix xs[0:i] one slot right.
 // 4. Drop the key into the gap.
@@ -15,7 +15,7 @@ package sorting
 //   - Stable.
 //
 // Expected: best O(n), average/worst O(n^2)
-// Input: not mutated
+// Input: mutated in place
 func InsertionSort(xs []int) []int {
 	// TODO: implement
 	return nil
