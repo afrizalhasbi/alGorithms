@@ -36,6 +36,11 @@ package scanning
 // Expected: O(n)
 // Input: not mutated
 func Kadane(xs []int) int {
-	// TODO: implement
+	// best prev & best global
+	// bp := 0
+	// bg := 0
+	// for i := range len(xs) {
+	// is contiguous
+	// }
 	return 0
 }

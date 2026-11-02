@@ -27,7 +27,7 @@ An algorithm is done only when both boxes are checked:
 | LinearSearch | easy | ✓ |
 | BinarySearch | easy | ✓ |
 | Kadane | medium | - |
-| TwoPointerDedup | medium | - |
+| TwoPointerDedup | medium | ✓ |
 | BoyerMooreMajority | medium | - |
 | KMP | hard | - |
 | RabinKarp | hard | - |
@@ -36,7 +36,7 @@ An algorithm is done only when both boxes are checked:
 
 | Algorithm | Difficulty | Done |
 |---|---|---|
-| FNV1a | easy | - |
+| FNV1a | easy | ✓ |
 | ChainMap | medium | - |
 | OpenMap | medium | - |
 | BloomFilter | hard | - |

@@ -33,6 +33,11 @@ package hashing
 // Expected: O(len(s)) per key
 // Input: not mutated
 func FNV1a(s string) uint32 {
+	sb := []byte(s)
+	out := uint32(2166136261)
+	for _, b := range sb {
+		out = (uint32(b) ^ out) * 16777619
+	}
 	// TODO: implement
-	return 0
+	return out
 }
