@@ -44,6 +44,9 @@ func InsertionSort(xs []int) []int {
 		for j := i - 1; j >= 0; j-- {
 			if xs[j] > k {
 				xs[j+1] = xs[j]
+				if j == 0 {
+					xs[j] = k
+				}
 			} else {
 				xs[j+1] = k
 				break

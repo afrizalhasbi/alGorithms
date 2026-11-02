@@ -36,6 +36,23 @@ package sorting
 // Expected: best/average/worst O(n^2)
 // Input: mutated in place
 func SelectionSort(xs []int) []int {
-	// TODO: implement
-	return nil
+	var i = 0
+	for i < len(xs) {
+		var s = xs[i]
+		var si = i
+
+		var j = i
+		for j < len(xs) {
+			// check if smaller, overwrite if so
+			if xs[j] < s {
+				s = xs[j]
+				si = j
+			}
+			j += 1
+		}
+		xs[si] = xs[i]
+		xs[i] = s
+		i += 1
+	}
+	return xs
 }
