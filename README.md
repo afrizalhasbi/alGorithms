@@ -12,8 +12,8 @@ An algorithm is done only when both boxes are checked:
 | Algorithm | Difficulty | Done |
 |---|---|---|
 | BubbleSort | easy | ✓ |
-| InsertionSort | easy | - |
-| SelectionSort | easy | - |
+| InsertionSort | easy | ✓ |
+| SelectionSort | easy | ✓ |
 | MergeSort | medium | - |
 | QuickSort | medium | - |
 | HeapSort | medium | - |

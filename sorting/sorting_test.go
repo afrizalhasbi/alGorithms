@@ -71,7 +71,10 @@ func checkSorting(t *testing.T, name string, sort func([]int) []int) {
 		slices.Sort(want)
 		got := sort(in)
 		if !slices.Equal(got, want) {
-			t.Errorf("%s: got %s, want %s", name, preview(got), preview(want))
+			// Print manually (then just fail) so the output has no
+			// file:line prefix or indentation.
+			fmt.Printf("%s: in: %s, got: %s, want: %s\n", name, preview(in), preview(got), preview(want))
+			t.Fail()
 		}
 	}
 	for _, in := range fixedCases {
