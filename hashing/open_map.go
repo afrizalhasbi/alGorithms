@@ -30,13 +30,16 @@ package hashing
 //  1. Construction: allocate a flat slot array, each slot holding a
 //     key, a value, and an occupied flag, all empty. Length is a
 //     power of two, since slots are addressed by the low bits of the
-//     hash.
+//     hash: hash & (n-1) turns the raw hash into a valid index in
+//     0..n-1.
 //  2. Put: start at the slot the key hashes to and walk forward one
 //     slot at a time. A slot holding the same key ends the walk with
 //     its value replaced. An empty slot ends the walk with the entry
 //     written there and the entry count raised by one.
-//  3. Get: the same walk. A slot holding the key ends it with the
-//     value; an empty slot ends it with "absent".
+//  3. Get: the same walk, still exactly one hash. Compare full keys
+//     with == at each occupied slot (a different key may occupy the
+//     slot this key hashed to); an empty slot ends the walk with
+//     "absent".
 //  4. After an insert, if entries have reached about seven tenths of
 //     the slot count, double the slot array and re-insert every live
 //     entry.
