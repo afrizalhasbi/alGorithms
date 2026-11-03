@@ -142,8 +142,8 @@ func TestNearEqual(t *testing.T) {
 		{1.0, 1.0 + 1e-12, 1e-9, 1e-300, true},
 		{1.0, 1.0 + 1e-6, 1e-9, 1e-300, false},
 		// Absolute tolerance fails here, relative works: 1e6 apart by 1e-6.
-		{1e6, 1e6 + 1e-6, 1e-9, 1e-300, false},
-		{1e6, 1e6 + 1, 1e-9, 1e-300, true},
+		{1e6, 1e6 + 1e-6, 1e-9, 1e-300, true},
+		{1e6, 1e6 + 1, 1e-9, 1e-300, false},
 		// Near zero the relative test is meaningless; the floor catches it.
 		{1e-12, 2e-12, 1e-9, 1e-9, true},
 		{1e-12, 2e-12, 1e-9, 1e-300, false},

@@ -1,5 +1,7 @@
 package numerics
 
+import "math"
+
 // [easy] NearEqual reports whether a and b agree to within a relative
 // tolerance.
 //
@@ -34,6 +36,25 @@ package numerics
 //
 // Expected: O(1)
 func NearEqual(a, b, rtol, absFloor float64) bool {
-	// TODO: implement
+	if a == b {
+		return true
+	}
+
+	if math.IsInf(a, -1) && math.IsInf(b, 1) {
+		return false
+	}
+	if math.IsInf(a, 1) && math.IsInf(b, -1) {
+		return false
+	}
+	absDiff := math.Abs(a - b)
+	if absDiff < absFloor {
+		return true
+	}
+	rDiff := rtol * max(math.Abs(a), math.Abs(b))
+
+	if absDiff <= rDiff {
+		return true
+	}
+
 	return false
 }

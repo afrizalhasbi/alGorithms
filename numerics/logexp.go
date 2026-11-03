@@ -1,5 +1,7 @@
 package numerics
 
+import "math"
+
 // [easy] SafeLog and SafeExp are the domain-guarded wrappers around the
 // standard logarithm and exponential.
 //
@@ -32,13 +34,17 @@ package numerics
 //
 // Expected: O(1)
 func SafeLog(x float64) (float64, bool) {
-	// TODO: implement
-	return 0, false
+	if x <= 0 || math.IsNaN(x) {
+		return 0, false
+	}
+	return math.Log(x), true
 }
 
 // SafeExp returns the exponential of x, reporting failure when the result
 // would overflow. See SafeLog for the rationale.
 func SafeExp(x float64) (float64, bool) {
-	// TODO: implement
-	return 0, false
+	if x > 709 {
+		return 0, false
+	}
+	return math.Exp(x), true
 }
