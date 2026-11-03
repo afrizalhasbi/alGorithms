@@ -2,6 +2,7 @@ package calculus
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"math/big"
 	"os"
@@ -9,6 +10,12 @@ import (
 )
 
 // ---- shared helpers ----
+
+// okPrint prints a success line styled like the failure lines: no
+// file:line prefix or indentation, always visible.
+func okPrint(format string, args ...any) {
+	fmt.Printf("ok: "+format+"\n", args...)
+}
 
 func loadFixture(t *testing.T, name string, v any) {
 	t.Helper()
@@ -73,6 +80,8 @@ func TestBisection(t *testing.T) {
 		}
 		if !near(got, want, 1e-12) {
 			t.Errorf("Bisection(%s) = %v, want %v", r.F, got, want)
+		} else {
+			okPrint("Bisection %s on [%v, %v]/%v/%v", r.F, r.A, r.B, got, want)
 		}
 		// The halving law fixes the iteration count: the fixture stored
 		// the count the law predicts, and a correct implementation cannot
@@ -84,6 +93,8 @@ func TestBisection(t *testing.T) {
 	// A non-bracketing interval must fail honestly.
 	if _, ok := Bisection(fCosMinusX, 2.0, 3.0, 1e-9); ok {
 		t.Error("Bisection with non-bracketing interval reported success, want failure")
+	} else {
+		okPrint("Bisection non-bracketing [2, 3]/rejected/rejected")
 	}
 	// No complexity test: the halving law is checked numerically above.
 }
@@ -122,6 +133,8 @@ func TestSecantMethod(t *testing.T) {
 		}
 		if !near(got, want, 1e-10) {
 			t.Errorf("SecantMethod(%s) = %v, want %v", r.F, got, want)
+		} else {
+			okPrint("SecantMethod %s on [%v, %v]/%v/%v", r.F, r.A+0.1, r.B-0.1, got, want)
 		}
 	}
 	// No complexity test: iteration counts are data-dependent here.
@@ -146,11 +159,15 @@ func TestNewtonRoot(t *testing.T) {
 		}
 		if !near(got, want, 1e-12) {
 			t.Errorf("NewtonRoot(x0=%v) = %v, want %v", c.x0, got, want)
+		} else {
+			okPrint("NewtonRoot x0=%v/%v/%v", c.x0, got, want)
 		}
 	}
 	// Flat derivative at the start must fail honestly.
 	if _, ok := NewtonRoot(fQuad, dfQuad, 1.2345, 1e-9, 100); ok {
 		t.Error("NewtonRoot at a point with zero slope reported success, want failure")
+	} else {
+		okPrint("NewtonRoot zero slope at 1.2345/rejected/rejected")
 	}
 	// No complexity test: convergence is quadratic; budget governs.
 }
@@ -165,12 +182,16 @@ func TestFixedPoint(t *testing.T) {
 	dottie := parseBig(t, "0.7390851332151606416553120876738734040134")
 	if !near(got, dottie, 1e-12) {
 		t.Errorf("FixedPoint(cos) = %v, want %v", got, dottie)
+	} else {
+		okPrint("FixedPoint cos from x0=0.5/%v/Dottie number", got)
 	}
 	// Log the final error for inspection; the destination is asserted.
 	t.Logf("final error %.3e", math.Abs(got-dottie))
 	// An expanding map must exhaust the budget and fail.
 	if _, ok := FixedPoint(func(x float64) float64 { return 2 * x }, 1.0, 1e-9, 100); ok {
 		t.Error("FixedPoint(expanding map) reported success, want failure")
+	} else {
+		okPrint("FixedPoint expanding map 2x/rejected/rejected")
 	}
 }
 
@@ -183,6 +204,8 @@ func TestGradientDescent(t *testing.T) {
 	}
 	if !near(got, 1.2345, 1e-10) {
 		t.Errorf("GradientDescent = %v, want 1.2345", got)
+	} else {
+		okPrint("GradientDescent quad from x0=10 step=0.8/%v/%v", got, 1.2345)
 	}
 	// Rate: error after n steps is x0-error times |1-0.8*2|^n = 0.6^n.
 	wantErr := 8.7655 * math.Pow(0.6, 60)
@@ -193,6 +216,8 @@ func TestGradientDescent(t *testing.T) {
 	// and fail by budget exhaustion.
 	if _, ok := GradientDescent(dfQuad, 10.0, 1.05, 1e-12, 200); ok {
 		t.Error("GradientDescent with unstable step reported success, want failure")
+	} else {
+		okPrint("GradientDescent unstable step 1.05/rejected/rejected")
 	}
 	// No complexity test: linear iteration count by design.
 }
@@ -215,10 +240,14 @@ func TestNewtonMinimize(t *testing.T) {
 	want := parseBig(t, raw[1].X)
 	if !near(got, want, 1e-10) {
 		t.Errorf("NewtonMinimize = %v, want %v", got, want)
+	} else {
+		okPrint("NewtonMinimize quartic-shift from x0=1/%v/%v", got, want)
 	}
 	// Flat curvature at the start must fail honestly.
 	if _, ok := NewtonMinimize(fQuarticShift, dfQuarticShift, d2fQuarticShift, 2.0, 1e-9, 100); ok {
 		t.Error("NewtonMinimize at zero curvature reported success, want failure")
+	} else {
+		okPrint("NewtonMinimize zero curvature at 2/rejected/rejected")
 	}
 }
 
@@ -245,6 +274,8 @@ func TestGoldenSection(t *testing.T) {
 		}
 		if !near(got, want, 1e-8) {
 			t.Errorf("GoldenSection(%s) = %v, want %v", r.F, got, want)
+		} else {
+			okPrint("GoldenSection %s on [%v, %v]/%v/%v", r.F, r.A, r.B, got, want)
 		}
 		t.Logf("GoldenSection(%s): fixture iteration count %d", r.F, r.Iters)
 		_ = i
@@ -269,6 +300,8 @@ func TestCentralDifference(t *testing.T) {
 		err := math.Abs(got - math.Cos(fx.X))
 		if !near(err, row.Err, 1e-12) {
 			t.Errorf("CentralDifference(sin, %v, %v) error = %v, want %v", fx.X, row.H, err, row.Err)
+		} else {
+			okPrint("CentralDifference sin at x=%v h=%v/err %v/err %v", fx.X, row.H, err, row.Err)
 		}
 		errs = append(errs, err)
 	}
@@ -309,6 +342,8 @@ func TestMMQuartic(t *testing.T) {
 			t.Errorf("MMQuartic iterate %d = %v, want %v", i, got[i], fx.Iters[i])
 		}
 	}
+	okPrint("MMQuartic %d iterates from x0=%v/got=match fixture iterates/want=match fixture iterates",
+		len(got), fx.X0)
 	// Descent property of the true function: every step must not increase
 	// f. This is the MM correctness invariant.
 	for i := 1; i < len(got); i++ {

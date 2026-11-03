@@ -10,6 +10,12 @@ import (
 
 // ---- shared helpers ----
 
+// okPrint prints a success line styled like the failure lines: no
+// file:line prefix or indentation, always visible.
+func okPrint(format string, args ...any) {
+	fmt.Printf("ok: "+format+"\n", args...)
+}
+
 func assertExponent(t *testing.T, name string, p, lo, hi float64) {
 	t.Helper()
 	// Being faster than expected is fine (measurement noise, machine
@@ -46,6 +52,7 @@ func mapOracle(t *testing.T, name string, m interface {
 	if _, ok := m.Get("missing"); ok {
 		t.Errorf("%s: Get on absent key returned ok=true", name)
 	}
+	okPrint("%s 2000 puts + 501 gets vs stdlib map/got=identical results/want=identical results", name)
 }
 
 // ---- one test per algorithm: correctness + complexity, always together ----
@@ -60,6 +67,8 @@ func TestFNV1a(t *testing.T) {
 	for in, want := range vectors {
 		if got := FNV1a(in); got != want {
 			t.Errorf("FNV1a(%q) = %#x, want %#x", in, got, want)
+		} else {
+			okPrint("FNV1a %q/%#x/%#x", in, got, want)
 		}
 	}
 	// Determinism: same input -> same hash, no collisions on 1000 keys.
@@ -122,6 +131,7 @@ func TestBloomFilter(t *testing.T) {
 			t.Fatalf("BloomFilter: false negative for %q (this is a hard bug)", s)
 		}
 	}
+	okPrint("BloomFilter %d added members/got=no false negatives/want=no false negatives", n)
 	absent := make([]string, n)
 	for i := range absent {
 		absent[i] = fmt.Sprintf("absent-%d", i)
@@ -137,6 +147,7 @@ func TestBloomFilter(t *testing.T) {
 		t.Errorf("BloomFilter false-positive rate = %.4f, expected ~0.01", rate)
 	} else {
 		t.Logf("false-positive rate %.4f (target 0.01)", rate)
+		okPrint("BloomFilter %d absent strings/%.4f fp-rate/~0.01 fp-rate", n, rate)
 	}
 	// Complexity.
 	assertExponent(t, "O(1) per op", complexity.FitExponent(1000, 5, func(n int) {
@@ -166,6 +177,7 @@ func TestRing(t *testing.T) {
 		}
 		seen[key] = got
 	}
+	okPrint("Ring %d keys/got=stable valid node assignment/want=stable valid node assignment", len(seen))
 	count := make(map[string]int, len(nodes))
 	for _, v := range seen {
 		count[v]++
@@ -176,6 +188,7 @@ func TestRing(t *testing.T) {
 			t.Errorf("node %q holds %.2f of keys with replicas=100 — virtual nodes broken", node, share)
 		} else {
 			t.Logf("node %q holds %.2f of keys", node, share)
+			okPrint("Ring node %s share/%.2f/<=0.50", node, share)
 		}
 	}
 	// Complexity: lookups are binary searches over ring positions, exponent ~0.

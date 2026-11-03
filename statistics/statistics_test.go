@@ -2,6 +2,7 @@ package statistics
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"os"
 	"testing"
@@ -10,6 +11,12 @@ import (
 )
 
 // ---- shared helpers ----
+
+// okPrint prints a success line styled like the failure lines: no
+// file:line prefix or indentation, always visible.
+func okPrint(format string, args ...any) {
+	fmt.Printf("ok: "+format+"\n", args...)
+}
 
 func loadFixture(t *testing.T, name string, v any) {
 	t.Helper()
@@ -33,6 +40,8 @@ func TestDiscreteExpectation(t *testing.T) {
 	fair := []float64{1, 2, 3, 4, 5, 6}
 	if v, ok := DiscreteExpectation(fair, []float64{1. / 6, 1. / 6, 1. / 6, 1. / 6, 1. / 6, 1. / 6}); !ok || !near(v, 3.5, 1e-12) {
 		t.Errorf("DiscreteExpectation(die) = (%v, %v), want (3.5, true)", v, ok)
+	} else {
+		okPrint("DiscreteExpectation fair die/%v/%v", v, 3.5)
 	}
 	// Invalid distributions must be refused, not summed.
 	bad := [][]float64{
@@ -43,13 +52,19 @@ func TestDiscreteExpectation(t *testing.T) {
 	for _, p := range bad {
 		if _, ok := DiscreteExpectation(fair[:len(p)], p); ok {
 			t.Errorf("DiscreteExpectation(probs=%v) reported success, want failure", p)
+		} else {
+			okPrint("DiscreteExpectation probs %v (invalid)/rejected/rejected", p)
 		}
 	}
 	if _, ok := DiscreteExpectation(nil, nil); ok {
 		t.Error("DiscreteExpectation(empty) reported success, want failure")
+	} else {
+		okPrint("DiscreteExpectation empty input/rejected/rejected")
 	}
 	if _, ok := DiscreteExpectation(fair[:3], []float64{1. / 3, 1. / 3, 1. / 3, 0}); ok {
 		t.Error("DiscreteExpectation(length mismatch) reported success, want failure")
+	} else {
+		okPrint("DiscreteExpectation length mismatch/rejected/rejected")
 	}
 	// No complexity test: O(n), no shape dependence.
 }
@@ -65,6 +80,8 @@ func TestBayesPosterior(t *testing.T) {
 	}
 	if !near(post[1], 2.0/3.0, 1e-12) || !near(post[0], 1.0/3.0, 1e-12) {
 		t.Errorf("BayesPosterior(heads) = %v, want [1/3, 2/3]", post)
+	} else {
+		okPrint("BayesPosterior heads/[1/3 2/3] as %v/[1/3 2/3]", post)
 	}
 	// Observing tails rules out the two-headed coin entirely: the zero
 	// likelihood must zero out its posterior weight without breaking
@@ -75,10 +92,14 @@ func TestBayesPosterior(t *testing.T) {
 	}
 	if !near(post[0], 1.0, 1e-12) {
 		t.Errorf("BayesPosterior(tails) = %v, want [1, 0]", post)
+	} else {
+		okPrint("BayesPosterior tails/%v/[1 0]", post)
 	}
 	// An observation impossible under every hypothesis must fail cleanly.
 	if _, ok := BayesPosterior(prior, [][]float64{{0, 1}, {0, 1}}, 0); ok {
 		t.Error("BayesPosterior(impossible obs) reported success, want failure")
+	} else {
+		okPrint("BayesPosterior impossible observation/rejected/rejected")
 	}
 	// Inputs must not be mutated.
 	like[0][0] = 0.5
@@ -86,6 +107,8 @@ func TestBayesPosterior(t *testing.T) {
 	_ = post2
 	if like[0][0] != 0.5 || prior[0] != 0.5 {
 		t.Error("BayesPosterior mutated its inputs")
+	} else {
+		okPrint("BayesPosterior input mutation check/got=unmutated/want=unmutated")
 	}
 	// No complexity test: O(hypotheses x outcomes), no shape dependence.
 }
@@ -120,14 +143,21 @@ func TestBinomialPMF(t *testing.T) {
 		}
 		if !near(total, 1.0, 1e-12) {
 			t.Errorf("BinomialPMF(%d, %v) distribution sums to %v, want 1", c.N, c.P, total)
+		} else {
+			okPrint("BinomialPMF n=%d p=%v %d points/got=dist matches ref, sums to %v/want=matches, sums to 1",
+				c.N, c.P, len(c.PMF), total)
 		}
 	}
 	// Out-of-range k is zero, not an error.
 	if v, ok := BinomialPMF(10, 11, 0.5); !ok || v != 0 {
 		t.Errorf("BinomialPMF(10, 11, 0.5) = (%v, %v), want (0, true)", v, ok)
+	} else {
+		okPrint("BinomialPMF out-of-range k/(%v, %v)/(0, true)", v, ok)
 	}
 	if _, ok := BinomialPMF(10, 5, 1.5); ok {
 		t.Error("BinomialPMF with p=1.5 reported success, want failure")
+	} else {
+		okPrint("BinomialPMF p=1.5 (invalid)/rejected/rejected")
 	}
 	// No complexity test: O(min(k, n-k)), no shape dependence.
 }
@@ -141,6 +171,8 @@ func TestCumulativeDistribution(t *testing.T) {
 	for i := range want {
 		if !near(post[i], want[i], 1e-12) {
 			t.Errorf("CumulativeDistribution[%d] = %v, want %v", i, post[i], want[i])
+		} else {
+			okPrint("CumulativeDistribution [0.2 0.3 0.1 0.4][%d]/%v/%v", i, post[i], want[i])
 		}
 	}
 	// Structural invariants: non-decreasing, ends at exactly one.
@@ -154,6 +186,8 @@ func TestCumulativeDistribution(t *testing.T) {
 	}
 	if _, ok := CumulativeDistribution([]float64{0.5, -0.1, 0.6}); ok {
 		t.Error("CumulativeDistribution with negative probability reported success, want failure")
+	} else {
+		okPrint("CumulativeDistribution negative probability/rejected/rejected")
 	}
 	// No complexity test: O(n), no shape dependence.
 }
@@ -171,11 +205,16 @@ func TestKDE1D(t *testing.T) {
 	if len(got) != len(fx.Grid) {
 		t.Fatalf("KDE1D returned %d values, want %d", len(got), len(fx.Grid))
 	}
+	maxRel := 0.0
 	for i := range got {
 		if !near(got[i], fx.Dens[i], 1e-9) {
 			t.Errorf("KDE1D(grid[%d] = %v) = %v, want %v", i, fx.Grid[i], got[i], fx.Dens[i])
 		}
+		if fx.Dens[i] != 0 {
+			maxRel = math.Max(maxRel, math.Abs(got[i]-fx.Dens[i])/fx.Dens[i])
+		}
 	}
+	okPrint("KDE1D %d grid points/got max rel err %.2e/want max rel err <=1e-9", len(got), maxRel)
 	// The estimate must integrate (roughly, by the trapezoid rule over the
 	// dense grid) to one — a check an independent failure mode, e.g. a
 	// missing normalization, cannot pass.
@@ -185,6 +224,8 @@ func TestKDE1D(t *testing.T) {
 	}
 	if !near(area, 1.0, 0.01) {
 		t.Errorf("KDE1D integrates to %v over the fixture grid, want ~1", area)
+	} else {
+		okPrint("KDE1D trapezoid integral over grid/%.4f/~1", area)
 	}
 	// Complexity: cost grows like (points times queries).
 	p := complexity.FitExponent(40, 3, func(n int) {
@@ -220,6 +261,8 @@ func TestEMBinomial(t *testing.T) {
 	if !near(t1, raw.Theta1, 1e-4) || !near(t2, raw.Theta2, 1e-4) {
 		t.Errorf("EMBinomial converged to (%v, %v), want (%v, %v)",
 			t1, t2, raw.Theta1, raw.Theta2)
+	} else {
+		okPrint("EMBinomial coin fixture/(%v, %v)/(%v, %v)", t1, t2, raw.Theta1, raw.Theta2)
 	}
 	// Monotonicity: the log-likelihood never decreases across iterations.
 	for i := 1; i < len(ll); i++ {
@@ -240,6 +283,8 @@ func TestEMBinomial(t *testing.T) {
 	// Invalid initial probabilities are refused.
 	if _, _, _, ok := EMBinomial(series, 1.5, 0.5, 10); ok {
 		t.Error("EMBinomial with theta1=1.5 reported success, want failure")
+	} else {
+		okPrint("EMBinomial theta1=1.5 (invalid)/rejected/rejected")
 	}
 	// No complexity test: O(series) per iteration, no shape dependence.
 }
@@ -270,6 +315,7 @@ func TestEMMultinomial(t *testing.T) {
 			}
 		}
 	}
+	okPrint("EMMultinomial fixture %d components/got=(w, theta) match fixture/want=match fixture", len(fx.W))
 	// Component probabilities stay normalized.
 	for i := range theta {
 		var s float64

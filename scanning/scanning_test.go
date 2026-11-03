@@ -24,6 +24,12 @@ func assertExponent(t *testing.T, name string, p, lo, hi float64) {
 	}
 }
 
+// okPrint prints a success line styled like the failure lines: no
+// file:line prefix or indentation, always visible.
+func okPrint(format string, args ...any) {
+	fmt.Printf("ok: "+format+"\n", args...)
+}
+
 // ---- one test per algorithm: correctness + complexity, always together ----
 
 func TestLinearSearch(t *testing.T) {
@@ -31,21 +37,30 @@ func TestLinearSearch(t *testing.T) {
 	xs := []int{5, 3, 8, 3, 1}
 	if got := LinearSearch(xs, 8); got != 2 {
 		t.Errorf("LinearSearch(xs, 8) = %d, want 2", got)
+	} else {
+		okPrint("LinearSearch [5 3 8 3 1] target 8/%d/%d", got, 2)
 	}
 	if got := LinearSearch(xs, 3); got != 1 {
 		t.Errorf("LinearSearch: must return the FIRST match, got %d", got)
+	} else {
+		okPrint("LinearSearch [5 3 8 3 1] target 3 (first match)/%d/%d", got, 1)
 	}
 	if got := LinearSearch(nil, 1); got != -1 {
 		t.Errorf("LinearSearch(nil, 1) = %d, want -1", got)
+	} else {
+		okPrint("LinearSearch nil target 1/%d/%d", got, -1)
 	}
+	randCases := 0
 	for _, n := range []int{0, 1, 17, 1000} {
 		in := complexity.RandInts(n, 11)
 		for target := range 10 {
 			if got, want := LinearSearch(in, target), slices.Index(in, target); got != want {
 				t.Errorf("LinearSearch(%v, %d) = %d, want %d", in, target, got, want)
 			}
+			randCases++
 		}
 	}
+	okPrint("LinearSearch %d randomized cases/got=stdlib Index/want=stdlib Index", randCases)
 	// Complexity: search for an absent value, forcing the full scan.
 	assertExponent(t, "O(n)", complexity.FitExponent(20000, 5, func(n int) {
 		LinearSearch(complexity.RandInts(n, 42), -1)
@@ -58,11 +73,16 @@ func TestBinarySearch(t *testing.T) {
 	for i, want := range []int{0, 1, 2, 3, 4, 5} {
 		if got := BinarySearch(xs, xs[i]); got != want {
 			t.Errorf("BinarySearch(xs, %d) = %d, want %d", xs[i], got, want)
+		} else {
+			okPrint("BinarySearch [1 3 5 7 9 11] target %d/%d/%d", xs[i], got, want)
 		}
 	}
 	if got := BinarySearch(nil, 1); got != -1 {
 		t.Errorf("BinarySearch(nil, 1) = %d, want -1", got)
+	} else {
+		okPrint("BinarySearch nil target 1/%d/%d", got, -1)
 	}
+	randCases := 0
 	for _, n := range []int{0, 1, 2, 17, 1000} {
 		in := complexity.DuplicatedInts(n)
 		for target := -1; target < n/2+2; target++ {
@@ -74,8 +94,10 @@ func TestBinarySearch(t *testing.T) {
 			if present && in[got] != target {
 				t.Errorf("BinarySearch(%d) = %d, but xs[%d] = %d", target, got, got, in[got])
 			}
+			randCases++
 		}
 	}
+	okPrint("BinarySearch %d randomized presence probes/got=oracle/want=oracle", randCases)
 	// Complexity: single searches are nanoseconds — amplify with many probes;
 	// O(log n) still shows exponent ~0.
 	const probes = 20_000
@@ -115,8 +137,11 @@ func TestKadane(t *testing.T) {
 		{[]int{1, 2, 3}, 6},
 	}
 	for _, c := range cases {
-		if got := Kadane(c.in); got != c.want {
+		got := Kadane(c.in)
+		if got != c.want {
 			t.Errorf("Kadane(%v) = %d, want %d", c.in, got, c.want)
+		} else {
+			okPrint("Kadane %v/%d/%d", c.in, got, c.want)
 		}
 	}
 	for _, n := range []int{1, 2, 50, 200} {
@@ -125,6 +150,7 @@ func TestKadane(t *testing.T) {
 			t.Errorf("Kadane(%v) = %d, want %d", in, got, want)
 		}
 	}
+	okPrint("Kadane 4 randomized cases/got=O(n^2) brute oracle/want=brute oracle")
 	// Complexity.
 	assertExponent(t, "O(n)", complexity.FitExponent(20000, 5, func(n int) {
 		Kadane(complexity.RandInts(n, 42))
@@ -145,12 +171,15 @@ func TestTwoPointerDedup(t *testing.T) {
 	}
 	for _, c := range cases {
 		in := slices.Clone(c.in)
-		if got := TwoPointerDedup(in); got != c.want {
+		got := TwoPointerDedup(in)
+		if got != c.want {
 			t.Errorf("TwoPointerDedup(%v) = %d, want %d", c.in, got, c.want)
 		}
 		if want := slices.Compact(slices.Clone(c.in)); !slices.Equal(in[:c.want], want) {
 			t.Errorf("TwoPointerDedup(%v): deduped prefix = %v, want %v",
 				c.in, previewInts(in[:c.want]), previewInts(want))
+		} else {
+			okPrint("TwoPointerDedup %v/%d %s/%d %s", c.in, got, previewInts(in[:got]), c.want, previewInts(want))
 		}
 	}
 	for _, n := range []int{1, 17, 1000} {
@@ -163,6 +192,7 @@ func TestTwoPointerDedup(t *testing.T) {
 				k, previewInts(in[:k]), len(want), previewInts(want))
 		}
 	}
+	okPrint("TwoPointerDedup 3 randomized inputs/got=Compact oracle/want=Compact oracle")
 	// Complexity.
 	assertExponent(t, "O(n)", complexity.FitExponent(20000, 5, func(n int) {
 		TwoPointerDedup(complexity.DuplicatedInts(n))
@@ -198,6 +228,8 @@ func TestBoyerMooreMajority(t *testing.T) {
 		got, found := BoyerMooreMajority(c.in)
 		if found != c.found || (found && got != c.want) {
 			t.Errorf("BoyerMooreMajority(%v) = (%d, %v), want (%d, %v)", c.in, got, found, c.want, c.found)
+		} else {
+			okPrint("BoyerMooreMajority %v/(%d, %v)/(%d, %v)", c.in, got, found, c.want, c.found)
 		}
 	}
 	for _, n := range []int{1, 2, 50, 501} {
@@ -209,6 +241,7 @@ func TestBoyerMooreMajority(t *testing.T) {
 			t.Errorf("BoyerMooreMajority(with majority) = (%d, %v), want (42, true)", got, found)
 		}
 	}
+	okPrint("BoyerMooreMajority 4 randomized majority inputs/got=(42, true)/(42, true)")
 	// Complexity.
 	assertExponent(t, "O(n)", complexity.FitExponent(20000, 5, func(n int) {
 		BoyerMooreMajority(complexity.RandInts(n, 42))
@@ -234,16 +267,25 @@ func checkStringSearch(t *testing.T, name string, fn func(string, string) int) {
 	text := "abracadabra"
 	if got, want := fn(text, "cada"), strings.Index(text, "cada"); got != want {
 		t.Errorf("%s: got %d, want %d", name, got, want)
+	} else {
+		okPrint("%s %q %q/%d/%d", name, text, "cada", got, want)
 	}
 	if got := fn(text, "zzz"); got != -1 {
 		t.Errorf("%s: absent pattern = %d, want -1", name, got)
+	} else {
+		okPrint("%s %q %q (absent)/%d/%d", name, text, "zzz", got, -1)
 	}
 	if got := fn("", "abc"); got != -1 {
 		t.Errorf("%s: empty text = %d, want -1", name, got)
+	} else {
+		okPrint("%s \"\" %q (empty text)/%d/%d", name, "abc", got, -1)
 	}
 	if got, want := fn("aaa", ""), strings.Index("aaa", ""); got != want {
 		t.Errorf("%s: empty pattern = %d, want %d", name, got, want)
+	} else {
+		okPrint("%s %q %q (empty pattern)/%d/%d", name, "aaa", got, want)
 	}
+	randCases := 0
 	for _, n := range []int{0, 1, 17, 1000} {
 		for seed := int64(1); seed <= 3; seed++ {
 			txt := complexity.RandStr(n, seed)
@@ -253,11 +295,14 @@ func checkStringSearch(t *testing.T, name string, fn func(string, string) int) {
 				if got, want := fn(txt, pat), strings.Index(txt, pat); got != want {
 					t.Errorf("%s(%q, %q) = %d, want %d", name, txt, pat, got, want)
 				}
+				randCases++
 			}
 			randPat := complexity.RandStr(3, seed+100)
 			if got, want := fn(txt, randPat), strings.Index(txt, randPat); got != want {
 				t.Errorf("%s(%q, %q) = %d, want %d", name, txt, randPat, got, want)
 			}
+			randCases++
 		}
 	}
+	okPrint("%s %d randomized texts/got=strings.Index oracle/want=strings.Index oracle", name, randCases)
 }

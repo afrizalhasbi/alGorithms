@@ -62,20 +62,28 @@ var fixedCases = [][]int{
 	{1, 9, 1, 9, 1, 9, 1}, // alternating duplicates
 }
 
+// okPrint prints a success line styled like the failure lines: no
+// file:line prefix or indentation, always visible.
+func okPrint(format string, args ...any) {
+	fmt.Printf("ok: "+format+"\n", args...)
+}
+
 // checkSorting runs every correctness case against the stdlib oracle.
 // Sorters mutate their input in place.
 func checkSorting(t *testing.T, name string, sort func([]int) []int) {
 	t.Helper()
 	check := func(in []int) {
+		inStr := preview(in) // captured before the in-place sort
 		want := slices.Clone(in)
 		slices.Sort(want)
 		got := sort(in)
 		if !slices.Equal(got, want) {
 			// Print manually (then just fail) so the output has no
 			// file:line prefix or indentation.
-			fmt.Printf("%s: in: %s, got: %s, want: %s\n", name, preview(in), preview(got), preview(want))
+			fmt.Printf("%s: in: %s, got: %s, want: %s\n", name, inStr, preview(got), preview(want))
 			t.Fail()
 		}
+		okPrint("%s %s/%s/%s", name, inStr, preview(got), preview(want))
 	}
 	for _, in := range fixedCases {
 		check(in)
