@@ -24,6 +24,18 @@ import "math/rand"
 // common production form caches one coordinate for the next call; the
 // fixture tests the pair form, which is stateless.
 //
+// Definitions:
+//  - uniform pair (u1, u2): two independent draws on [0, 1), with u2
+//     strictly positive (the log's argument; a zero draw means
+//     negative infinity).
+//  - radius: the square root of minus two times the natural log of
+//     u2. Non-negative by construction.
+//  - angle: two pi times u1.
+//  - pair form: the stateless transform — return radius times cosine
+//     of the angle, and radius times sine of the angle, both at once.
+//     The cached form (one coordinate held for the next call) is NOT
+//     what the fixture tests.
+//
 // Steps:
 //  1. Validate: both uniforms lie in [0, 1) and the second is strictly
 //     positive.

@@ -32,6 +32,24 @@ import "math/rand"
 // rejecting, so the random stream's consumption is deterministic given
 // the seed — otherwise reproducing a run twice becomes impossible.
 //
+// Definitions:
+//  - chain state: the current point of the random walk. Every state,
+//     accepted or not, is recorded as a sample candidate.
+//  - proposal: the current state plus a uniform step from minus delta
+//     to delta. The proposal is symmetric — the step distribution
+//     makes proposal and reverse proposal equally likely — which is
+//     what justifies the plain ratio below.
+//  - accept ratio: the target density at the proposal OVER the target
+//     density at the current state. A ratio, not a difference; the
+//     target's normalizing constant cancels and must not be required.
+//     Zero current density always accepts.
+//  - the two draws per iteration: one proposal step AND one acceptance
+//     threshold, both consumed every iteration even when rejecting —
+//     the stream consumption must be deterministic given the seed.
+//  - burn-in: the early states discarded before statistics are taken
+//     (the test drops the first half). Rejections leaving the state
+//     unchanged are part of the chain, not failures.
+//
 // Steps:
 //  1. Validate: delta positive, at least one iteration, initial state
 //     finite.

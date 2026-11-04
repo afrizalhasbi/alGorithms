@@ -23,6 +23,19 @@ package sampling
 // a non-positive rate must be refused rather than produce a NaN or a
 // sign-flipped sample.
 //
+// Definitions:
+//  - CDF: the cumulative distribution function of the target — the
+//     probability of a draw at most x. Inverting it turns uniforms
+//     into samples.
+//  - rate: the exponential's parameter. Must be strictly positive.
+//  - the uniform convention: u in [0, 1), and the inverse uses one
+//     minus u (not u) in the logarithm. Legal alternates exist that
+//     give the same distribution but different samples; the fixture
+//     pins this one.
+//  - branch split: where a piecewise inverse changes formula — at the
+//     CDF's value at the peak (one half here). A draw exactly on the
+//     split belongs to the lower branch.
+//
 // Steps:
 //  1. Validate: the rate is positive; every u lies in [0, 1).
 //  2. For each u: return minus the natural logarithm of (one minus u),

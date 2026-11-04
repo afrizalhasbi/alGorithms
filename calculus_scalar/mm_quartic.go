@@ -37,6 +37,21 @@ package calculus
 // implementation; the test also verifies the descent property of the
 // true function at every step, the invariant that makes MM correct.
 //
+// Definitions:
+//  - target: f(x) = one quarter x to the fourth, the function actually
+//     being minimized.
+//  - surrogate (majorizer): the quadratic built per iteration. It is
+//     everywhere at least the target, touches it at the current point
+//     (same value, same slope there), and is easy to minimize.
+//  - curvature: the surrogate's second derivative — fixed per
+//     iteration at three times the current point's square. The bound
+//     that makes the parabola majorize the target.
+//  - iterate: the current point; the sequence of iterates is the
+//     returned answer. Each step multiplies it by a fixed factor
+//     (two thirds), the visible convergence rate.
+//  - descent property: the target's value is non-increasing along the
+//     iterates. The invariant the test checks at every step.
+//
 // Steps:
 //  1. At the current point, form the quadratic surrogate: it equals the
 //     target there, shares the target's slope there, and has curvature

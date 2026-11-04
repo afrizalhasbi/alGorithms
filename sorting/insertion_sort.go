@@ -16,6 +16,18 @@ package sorting
 // three writes a swap costs, so the total number of writes is about
 // half of bubble sort's.
 //
+// Definitions:
+//  - sorted region / unsorted remainder: a prefix that is sorted and
+//     whose items are final, and the rest of the slice. The region
+//     starts as the first item alone and grows by one per round.
+//  - key: the item being inserted this round — the first item of the
+//     remainder. It is held aside before the walk starts, which opens
+//     the gap.
+//  - gap: the slot vacated by lifting the key out. Items slide INTO
+//     the gap; the gap moves left as they do.
+//  - the walk: the backwards scan in step 2. It stops at an item that
+//     is not greater than the key, or at the front of the slice.
+//
 // Steps:
 //  1. Each round, take the first item of the unsorted remainder as
 //     the key.

@@ -28,6 +28,23 @@ package sorting
 // position where they crossed splits the slice into the two sides to
 // recurse on.
 //
+// Definitions:
+//  - pivot: the item chosen in step 2. Partitions and comparisons use
+//     its value; the item itself moves during partitioning like any
+//     other.
+//  - partition: one application of the two-cursor scheme, rearranging
+//     a range so that no item larger than the pivot value sits before
+//     the split and none smaller sits after it.
+//  - cursors: the two moving positions that scan the range inward.
+//     The left one advances past items smaller than the pivot value;
+//     the right one advances past items larger. Each stops at the
+//     first item that belongs on the other side.
+//  - split (where the cursors cross): the boundary returned by the
+//     partition. It is NOT necessarily the pivot's final position —
+//     unlike the Lomuto scheme, no item is guaranteed to be in its
+//     final position after one partition. The two recursion ranges
+//     are divided at the split.
+//
 // Steps:
 //  1. Exit condition: a range of one or zero items is sorted.
 //  2. Choose the pivot at random, using one random generator created

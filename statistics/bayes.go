@@ -19,6 +19,21 @@ package statistics
 // hypothesis considers impossible makes the posterior undefined; that is
 // a reported error, not a crash.
 //
+// Definitions:
+//  - hypothesis: one candidate explanation, with one prior probability.
+//     The hypotheses form the index of everything below.
+//  - prior: the probability of each hypothesis before the observation.
+//     It sums to one; validating that is step 1, not a courtesy.
+//  - likelihood table: likelihood[h][o], the probability of observing o
+//     assuming hypothesis h is true. Row h is a distribution over o and
+//     sums to one; the table is NOT normalized as a whole.
+//  - weight: prior(h) times likelihood[h][obs]. Pre-normalization; only
+//     its ratios across hypotheses matter.
+//  - posterior: the weights divided by their sum, again summing to one.
+//  - impossible observation: the sum of weights is zero — every
+//     hypothesis assigns the observation zero likelihood. Reported as
+//     failure, not divided through.
+//
 // Steps:
 //  1. Validate: the prior sums to one; every row of the likelihood table
 //     sums to one; the observation index is in range.

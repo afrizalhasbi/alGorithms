@@ -25,6 +25,21 @@ package sorting
 // items must not end up in a run that gets reversed), and merges
 // must take from the left run on ties.
 //
+// Definitions:
+//  - run: a maximal stretch that is already ascending, or a strictly
+//     descending stretch reversed in place. Maximal means extended as
+//     far as it goes in both directions before any shortening happens.
+//  - strictly descending: each item greater than the next. The
+//     strictness is load-bearing: equal items must not end up in a run
+//     that gets reversed, or stability is lost.
+//  - minimum run length: the threshold below which a found run gets
+//     extended with following items via binary insertion sort.
+//  - binary insertion sort: insertion sort whose walk (see
+//     insertion_sort) is replaced by a binary search for the key's
+//     position, followed by the shift.
+//  - pairwise merge: the merge pattern in step 2 — always merge the
+//     two leftmost runs, replace them with the result, repeat.
+//
 // Steps:
 //  1. Walk the slice once, cutting it into runs as described above.
 //     While walking, extend any run that is shorter than the minimum

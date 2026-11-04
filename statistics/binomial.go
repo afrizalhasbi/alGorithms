@@ -25,6 +25,19 @@ package statistics
 // one minus p, so the climb can always start from whichever end of the
 // distribution is closer to the target k and take the shorter walk.
 //
+// Definitions:
+//  - point probability: the probability of exactly k successes. The PMF
+//     is the list of these over all k.
+//  - the zero-successes point: every trial fails; the clean product of
+//     n copies of (one minus p). The all-successes point is the mirror
+//     with p in place of (one minus p).
+//  - ratio: the exact quotient of the point probability at k over the
+//     one at k-1, obtained by dividing the formulas and cancelling. It
+//     involves n, k and p only.
+//  - climb: starting at one end's point probability and applying the
+//     ratio repeatedly until the target k is reached. The direction is
+//     whichever end is nearer to k.
+//
 // Steps:
 //  1. Validate: n at least zero, p in the zero-one range, k in the
 //     zero-to-n range. Out-of-range k is a probability of zero (no

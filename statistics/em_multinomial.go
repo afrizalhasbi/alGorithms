@@ -33,6 +33,25 @@ package statistics
 // fixture's converged parameters come from an independent implementation
 // run to convergence.
 //
+// Definitions:
+//  - observation: one outcome-count vector, one entry per face. Totals
+//     may differ between observations.
+//  - component: one of the two hidden sources (one die). It has a
+//     probability per face; those probabilities sum to one.
+//  - mixing weight: the probability that an observation came from
+//     component one. The two weights sum to one; both are unknown,
+//     unlike in EMBinomial where they were fixed at one half.
+//  - log-likelihood of an observation under a component: the log of the
+//     mixing weight plus the sum over faces of count times the log of
+//     that face's probability.
+//  - responsibility (of a component for an observation): the
+//     exponentiated difference of the component's log-likelihood and
+//     the LogSumExp marginal over the two components. The two
+//     responsibilities of one observation sum to one.
+//  - responsibility-weighted count: an observation's count for a face,
+//     multiplied by that observation's responsibility for the component.
+//     All M-step estimates are ratios of these sums.
+//
 // Steps:
 //  1. Validate: every observation sums to the same non-zero total? No —
 //     observations may have different totals; what must hold is that

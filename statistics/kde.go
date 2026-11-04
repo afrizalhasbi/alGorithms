@@ -27,6 +27,18 @@ package statistics
 // it is the honest, direct form, and the complexity test checks that the
 // cost grows like the product of the two list lengths.
 //
+// Definitions:
+//  - kernel: the bump placed on every data point — here the standard
+//     normal density, centered on the point.
+//  - bandwidth: the standard deviation of every bump. One input; it
+//     scales the kernel, nothing else.
+//  - standardized distance: (query minus data point) over bandwidth.
+//     The kernel is evaluated at this, never at the raw distance.
+//  - contribution: the standard normal density at the standardized
+//     distance, times one over (count times bandwidth). The estimate
+//     at a query point is the sum of contributions over all data
+//     points.
+//
 // Steps:
 //  1. Validate: bandwidth positive, at least one data point, at least one
 //     query point.

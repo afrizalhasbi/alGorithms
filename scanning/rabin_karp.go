@@ -28,6 +28,21 @@ package scanning
 // position and drag the search back to quadratic, which is the
 // algorithm's known weakness.
 //
+// Definitions:
+//  - window: the stretch of text as long as the pattern, starting at
+//     the position currently under test.
+//  - window hash / pattern hash: one number each, from the same hash
+//     function. The pattern hash is computed once; the window hash is
+//     updated per slide.
+//  - rolling update: sliding the window one character by removing the
+//     outgoing character's contribution and adding the incoming one,
+//     with a multiplication in between. Never re-hash a window from
+//     scratch.
+//  - collision: two different stretches with the same hash. A hash hit
+//     means only "worth checking": the window and pattern must then be
+//     compared character by character. Skipping that gives wrong
+//     answers, not slower ones.
+//
 // Steps:
 //  1. Trivial shapes first: an empty pattern matches at the very
 //     start of any text; a pattern longer than the text cannot match.

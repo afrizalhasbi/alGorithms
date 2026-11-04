@@ -24,6 +24,19 @@ package calculus
 // bisection's logarithmic rate and Newton's quadratic rate; matching
 // Newton's count or bisection's count is a bug, not a rounding difference.
 //
+// Definitions:
+//  - iterates: the two most recent points, the window. The older is
+//     dropped each step; the new iterate becomes the newer point.
+//  - secant line: the line through the two iterates. Its zero crossing
+//     is the next iterate; its slope is the stand-in for the
+//     derivative, assembled from points the iteration visits anyway.
+//  - flat secant: the two most recent iterates have equal function
+//     values — the slope is zero. Reported as failure.
+//  - slide the window: the update in step 3. Pure re-labeling; no
+//     values are recomputed for it.
+//  - stopping criteria: the step size or the function value within
+//     tolerance; failure on a flat secant or exhausted budget.
+//
 // Steps:
 //  1. Validate: the two starting points are distinct and give distinct
 //     function values (otherwise the secant is vertical or the slope is

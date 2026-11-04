@@ -25,6 +25,21 @@ import (
 // interval is empty, and by the invariant that means the target is
 // not present.
 //
+// Definitions:
+//  - interval: the range of positions [lo, hi] where the target could
+//     still be. The state of the search; everything outside it is
+//     already discarded.
+//  - midpoint: a position inside the interval, lo + (hi-lo)/2. Its
+//     item is the only one compared this round.
+//  - discard: removing the midpoint AND the half it bounds from the
+//     interval. The midpoint itself is excluded either way — that is
+//     what guarantees progress.
+//  - invariant: if the target is present at all, it lies inside the
+//     current interval. Every discard preserves it.
+//  - empty interval: lo has passed hi. The only condition for "not
+//     found"; stopping earlier can miss a target on the last
+//     surviving item.
+//
 // Steps:
 //  1. Start with the interval covering the whole slice.
 //  2. Each round, compare the target with the midpoint item. Equal:

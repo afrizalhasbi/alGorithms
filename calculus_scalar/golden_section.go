@@ -30,6 +30,21 @@ package calculus
 // fixture includes such a case with a knowingly limited bracket instead
 // of pretending the method can cope.
 //
+// Definitions:
+//  - unimodal: f decreases then increases on the bracket — one valley.
+//     The contract of the whole method; violated, it converges happily
+//     to a wrong local minimum.
+//  - interior points: the two evaluation positions inside [a, b], each
+//     the golden conjugate fraction of the width in from its nearer
+//     end, symmetric about the middle.
+//  - golden conjugate fraction: 1 minus the golden ratio conjugate,
+//     about 0.382 of the width from each end.
+//  - reuse: after discarding a side, one interior point of the new
+//     bracket sits exactly where the next comparison needs a point;
+//     only one fresh evaluation per step.
+//  - the answer: the midpoint of the final bracket, not either interior
+//     point.
+//
 // Steps:
 //  1. Validate: a is less than b.
 //  2. Place two interior points: one at a plus the golden conjugate

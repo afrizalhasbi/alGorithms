@@ -16,6 +16,17 @@ package sorting
 // relative order is lost. (A stable variant exists that shifts items
 // instead, at the cost of more writes.)
 //
+// Definitions:
+//  - sorted region / remainder: a final, sorted prefix of the slice,
+//     and the rest. The region starts EMPTY (unlike insertion sort) —
+//     nothing is known to be sorted until the first round finishes.
+//  - round: one scan of the whole remainder plus one swap.
+//  - the scan: the full pass over the remainder that finds its
+//     smallest item. Ties are resolved by keeping the FIRST smallest
+//     seen; the scan never overwrites on equality.
+//  - boundary: the first position of the remainder. Swapping the
+//     smallest item into it grows the region by one.
+//
 // Steps:
 //  1. Each round, scan the whole remainder once to find its smallest
 //     item. If several items tie for smallest, the scan naturally

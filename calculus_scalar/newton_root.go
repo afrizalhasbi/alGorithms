@@ -23,6 +23,20 @@ package calculus
 // optimization: exceeding the budget without meeting the tolerance is
 // reported as failure, exactly like the slope problem.
 //
+// Definitions:
+//  - slope (df): the derivative at the current point, supplied by the
+//     caller. A zero (or near-zero) slope means an undefined step —
+//     reported as failure, not divided through.
+//  - tangent: the first-order model of f at the current point. Its
+//     zero crossing is the next iterate.
+//  - Newton step: current point minus f at the current point, over
+//     the slope at the current point.
+//  - iterate: the current guess. The step and the function value at
+//     the iterate are the two stopping criteria.
+//  - budget exhaustion: the iteration cap reached without meeting the
+//     tolerance. A correctness requirement — cycling and divergence
+//     are real outcomes, not edge cases.
+//
 // Steps:
 //  1. Validate: the slope at the starting point is not zero (or
 //     denormal-close to it).

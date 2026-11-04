@@ -21,6 +21,19 @@ package statistics
 // returns a running list that dips has a bug the test can catch
 // structurally, without knowing the right numbers.
 //
+// Definitions:
+//  - point probabilities: the input list; the probability of each
+//     individual outcome.
+//  - cumulative entry k: the sum of point probabilities 0 through k.
+//     Entry k answers "outcome at most k". The output is these entries
+//     in order.
+//  - forced final entry: the last cumulative value is SET to exactly
+//     one, not accumulated — the drift of summing many slightly-off
+//     floats is absorbed into it rather than trusted.
+//  - non-decreasing: each entry is at least the one before it. True by
+//     construction if every probability is non-negative; a dip means a
+//     bug, which the test detects structurally.
+//
 // Steps:
 //  1. Validate: every probability is at least zero.
 //  2. Accumulate the running sum into the output slice.

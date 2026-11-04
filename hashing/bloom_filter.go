@@ -32,6 +32,20 @@ package hashing
 // or mix it into two values, and combine them with the function's
 // index to produce each variant. No separate hash functions needed.
 //
+// Definitions:
+//  - bit array: the flat array of m bits, indexed 0..m-1, all clear
+//     at construction.
+//  - base hash: the single hash of the item (FNV1a from this package).
+//  - variant hashes (the k of them): the k positions derived from the
+//     base hash by the Kirsch-Mitzenmacher combination described in the
+//     background — the same derivation, with the same k, at add time
+//     and query time.
+//  - false positive / false negative: "present" reported for an item
+//     never added (allowed, bounded by fpRate), and "absent" reported
+//     for an added item (forbidden, structurally impossible).
+//  - sizing formula: from n (expected items) and the target rate p,
+//     m = -n*ln(p)/ln(2)^2 and k = (m/n)*ln(2), rounded.
+//
 // Steps:
 //  1. Construction: from the expected item count and the target
 //     false-positive rate, compute the bit array length and the

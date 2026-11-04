@@ -26,6 +26,18 @@ package calculus
 // iteration also stops when the midpoint stops moving, and the test
 // counts the iterations to confirm the halving law held.
 //
+// Definitions:
+//  - bracket: the interval [a, b] whose endpoints have f(a) and f(b) of
+//     opposite signs. The bracket, not f, is the state the iteration
+//     carries.
+//  - sign change survives: the half of the bracket on which the
+//     endpoints still have opposite signs (or hit zero exactly).
+//  - midpoint: (a+b)/2 computed in floating point. The iteration ends
+//     when the midpoint equals an endpoint in float — that is the
+//     ulp-level floor, not the tolerance.
+//  - iteration count: the number of halvings. It is predicted in
+//     advance by the tolerance and verified by the test.
+//
 // Steps:
 //  1. Validate: a is less than b, and f(a) times f(b) is negative (or
 //     one of them is zero — an endpoint is already a root).

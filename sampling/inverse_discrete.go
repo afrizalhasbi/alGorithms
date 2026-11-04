@@ -30,6 +30,21 @@ package sampling
 // CumulativeDistribution), so a draw of just under one cannot walk off
 // the end of the list; the fixture includes one such draw.
 //
+// Definitions:
+//  - pmf: the point probability of each outcome, one entry per
+//     outcome, in outcome order.
+//  - staircase: the cumulative sums of the pmf — step k's height is
+//     the pmf up to and including outcome k.
+//  - the walk: for each uniform draw, scanning the cumulative sums in
+//     order and returning the first index whose cumulative sum is
+//     STRICTLY greater than the draw. The strictness is the boundary
+//     convention: a draw exactly on a step boundary belongs to the
+//     NEXT step.
+//  - walk-off-the-end: a draw that reaches the final cumulative sum
+//     through rounding. Handled by returning the last index with
+//     positive probability; the final cumulative entry is treated as
+//     exactly one (see statistics.CumulativeDistribution).
+//
 // Steps:
 //  1. Validate: every probability is non-negative; the list is non-empty.
 //  2. For each uniform draw: walk the cumulative sums in order and

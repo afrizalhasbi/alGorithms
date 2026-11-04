@@ -18,6 +18,18 @@ package sorting
 // everything in the left half started out before everything in the
 // right half.
 //
+// Definitions:
+//  - merge: combining two already-sorted slices into one sorted slice.
+//     It is the only place items move; the sort itself is just
+//     recursion plus merges.
+//  - left half / right half: the two pieces of the split. "Left" means
+//     earlier positions in the original slice, which is what stability
+//     depends on.
+//  - front item: the first not-yet-consumed item of a half during the
+//     merge. Each comparison consumes exactly one front item.
+//  - buffer: the auxiliary slice in step 3. Only the left half is
+//     copied into it; the right half stays in place.
+//
 // Steps:
 //  1. Base case: a slice with one or zero items is sorted, so return
 //     it unchanged. This is what stops the recursion.

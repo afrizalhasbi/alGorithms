@@ -26,6 +26,23 @@ package scanning
 // algorithm honest; skipping it gives wrong answers on inputs like
 // A, A, B.
 //
+// Definitions:
+//  - majority: a value occupying strictly more than half the
+//     positions. Exactly half is not a majority.
+//  - candidate: the value currently holding the vote, plus its
+//     counter. The counter is how many UNPAIRED votes the candidate
+//     still has, not how many times it occurred.
+//  - pairing off: the intuition of the first pass — each item either
+//     agrees with the candidate (counter up) or cancels one of its
+//     votes (counter down). A zero counter hands candidacy to the
+//     next item.
+//  - survivor: the candidate left after the first pass. Only a
+//     provisional winner: without a majority it is an arbitrary
+//     leftover, hence the second pass.
+//  - verification pass: the second full scan, counting the survivor's
+//     actual occurrences. Required for correctness; skipping it fails
+//     inputs like A, A, B.
+//
 // Steps:
 //  1. An empty slice has no candidate: report "no majority".
 //  2. First pass, over the whole slice: no candidate yet means the

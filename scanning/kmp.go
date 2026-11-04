@@ -24,6 +24,22 @@ package scanning
 // not, the text position never goes back; only the amount of pattern
 // currently matched jumps backwards through the failure table.
 //
+// Definitions:
+//  - matched stretch: the consecutive run of pattern characters that
+//     currently matches the text ending at the current text position.
+//     Tracked by a single count, not by positions.
+//  - proper prefix: a prefix shorter than the whole string.
+//  - failure table: for each pattern position, the length of the
+//     longest proper prefix of the pattern that is also a suffix of
+//     the matched stretch ending there. "How much survives a mismatch
+//     just after this position."
+//  - text position: where the text character being compared sits. It
+//     NEVER moves backwards — not on a match, not on a mismatch.
+//  - pattern position: how much of the pattern is matched. The only
+//     thing that jumps backwards, through the failure table.
+//  - the self-comparison: building the failure table by running the
+//     same matching discipline with the pattern against itself.
+//
 // Steps:
 //  1. Build the failure table for the pattern before searching. The
 //     computation is the same matching discipline as the search

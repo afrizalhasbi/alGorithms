@@ -25,6 +25,18 @@ package calculus
 // response is to hit the iteration budget and report failure, not to
 // mask the divergence with the budget.
 //
+// Definitions:
+//  - fixed point: a value x with g(x) = x.
+//  - iterate: the current guess. Each step applies g to it once.
+//  - local slope: g's derivative at the fixed point. Its magnitude
+//     below one means contraction (each step scales the distance to
+//     the fixed point by that factor); above one means divergence.
+//  - convergence test: the absolute difference of two successive
+//     iterates within the tolerance.
+//  - budget exhaustion: the iteration cap reached without meeting the
+//     tolerance. Reported as failure — including on purpose, for the
+//     deliberately expanding map in the fixture.
+//
 // Steps:
 //  1. Iterate: the new value is g of the current value.
 //  2. Stop when the absolute difference between successive values is

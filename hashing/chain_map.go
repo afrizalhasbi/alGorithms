@@ -42,6 +42,18 @@ package hashing
 // keys with == as it walks. The hash picks the bucket; the key
 // comparison picks the entry.
 //
+// Definitions:
+//  - bucket: one slot of the bucket array, holding one chain.
+//  - chain: the slice of entries in one bucket, in insertion order.
+//  - load factor: entries divided by buckets. The rehash threshold in
+//     step 4 is reached when it hits one.
+//  - bucket index: FNV1a(key) & (n-1) — the raw hash reduced to
+//     0..n-1 by keeping the low bits. Valid only for power-of-two n.
+//  - rehash: the wholesale replacement in step 4. It re-hashes every
+//     entry against the NEW bucket count (a fresh call to Put, so the
+//     load-factor check re-arms naturally); entries are re-distributed,
+//     not copied positionally.
+//
 // Steps:
 //  1. Construction: allocate a bucket array whose length is a power
 //     of two large enough for the size hint, and start the entry

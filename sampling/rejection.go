@@ -28,6 +28,23 @@ import "math/rand"
 // wrong m or a reversed ratio shows up immediately as a wildly wrong
 // rate.
 //
+// Definitions:
+//  - target / envelope: the density wanted, and the simpler density
+//     candidates are drawn from. Both non-negative; the envelope is
+//     sampled by a caller-supplied sampler.
+//  - m: the envelope constant with target(x) at most m times
+//     envelope(x) everywhere. Determines the expected candidates per
+//     accepted sample, exactly m.
+//  - acceptance test: a uniform draw, multiplied by m times the
+//     envelope density at the candidate, below the target density
+//     there. Reversing the ratio or mis-sizing m shows up as a wildly
+//     wrong acceptance rate.
+//  - banked samples: the accepted candidates. Collected until there
+//     are n; rejected candidates are consumed and gone.
+//  - candidates: the total number of envelope draws consumed,
+//     returned so the test can compare the observed acceptance rate
+//     with the theoretical one.
+//
 // Steps:
 //  1. Validate: m is at least the sup of the ratio of target to envelope
 //     densities (the caller's responsibility; the tests use m from the

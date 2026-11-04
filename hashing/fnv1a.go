@@ -17,6 +17,15 @@ package hashing
 // older FNV-1, which has weaker scattering and fails the test
 // vectors.
 //
+// Definitions:
+//  - offset basis / prime: the two FNV constants, 2166136261 and
+//     16777619. Exact values, checked by test vectors.
+//  - running value: the 32-bit accumulator. Arithmetic wraps
+//     naturally at 32 bits (uint32); no masking is needed.
+//  - the mix: exclusive-or the byte into the running value, THEN
+//     multiply by the prime. The order is the entire difference
+//     between FNV-1a and the older FNV-1.
+//
 // Steps:
 //  1. Start the running value at the offset basis constant.
 //  2. For each byte of the input, in order: exclusive-or the byte

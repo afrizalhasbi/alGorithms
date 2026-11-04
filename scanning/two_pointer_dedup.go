@@ -17,6 +17,18 @@ package scanning
 // position moves forward over every item. The name of the algorithm
 // comes from these two positions moving at different speeds.
 //
+// Definitions:
+//  - kept region: the prefix of the slice holding the deduplicated
+//     data so far. Starts as the first item alone; its length is the
+//     returned value.
+//  - read position: where the scan currently is. Moves forward over
+//     every remaining item, one at a time.
+//  - duplicate: an item equal to the LAST KEPT value, not to the
+//     previously read item — those coincide only because the input is
+//     sorted.
+//  - write slot: the position just past the kept region. A new value
+//     is copied into it; a duplicate leaves it untouched.
+//
 // Steps:
 //  1. An empty slice returns zero.
 //  2. The kept region starts as just the first item (one item is

@@ -25,6 +25,23 @@ package sorting
 // that share the new digit. If any pass is unstable, the earlier
 // work is thrown away and the result is wrong.
 //
+// Definitions:
+//  - digit: the base-16 digit of an item at the current position.
+//     Digit 0 is the least significant (the lowest four bits); each
+//     digit is four bits of the integer.
+//  - pass: one counting sort over one digit position, from digit 0
+//     upward. The number of passes is set by the digit count of the
+//     largest value.
+//  - counts: the 16 counters, one per possible digit value, filled in
+//     step 3a.
+//  - starting positions: the prefix sums of the counts. Counts "how
+//     many items carry this digit"; starting positions answer "where
+//     in the output this digit's region begins".
+//  - scratch copy: the auxiliary buffer each pass writes into, before
+//     being copied back. Each pass reads the slice and writes the
+//     scratch; the roles are NOT swapped between passes — the copy
+//     back in step 3d keeps the slice the source of truth.
+//
 // Steps:
 //  1. A slice with one or zero items is already sorted.
 //  2. Find the largest value. It decides how many passes are needed:

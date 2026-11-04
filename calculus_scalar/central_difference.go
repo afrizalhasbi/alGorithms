@@ -25,6 +25,17 @@ package calculus
 // the package — a way to check a hardcoded derivative — and an exercise
 // in its own right about what finite differences can and cannot promise.
 //
+// Definitions:
+//  - forward difference: (f(x+h) - f(x)) / h. The obvious one; its
+//     error is proportional to h.
+//  - central difference: (f(x+h) - f(x-h)) / (2h). Two evaluations.
+//  - step (h): the distance to the evaluation points. An input, not a
+//     choice of the implementation.
+//  - the ladder: the fixture's sequence of h values, each smaller than
+//     the last, used to verify the error law (halving h quarters the
+//     error) until the cancellation floor, below which the error turns
+//     and grows as h shrinks.
+//
 // Steps:
 //  1. Evaluate f at x plus h and x minus h.
 //  2. Return their difference divided by two h.

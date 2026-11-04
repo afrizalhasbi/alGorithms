@@ -26,6 +26,20 @@ package hashing
 // live entry again. Entries land in different slots than before,
 // since the slot count changed.
 //
+// Definitions:
+//  - slot: one element of the flat array: key, value, occupied flag.
+//     There is no bucket-of-chain; occupied or not, the slot is the
+//     whole story.
+//  - probe: the walk from the home slot forward one slot at a time,
+//     wrapping around the end of the array if reached. Both Put and
+//     Get probe the same way.
+//  - home slot: the position the key hashes to: FNV1a(key) & (n-1).
+//     The entry may end up far from it.
+//  - clump: a maximal run of occupied slots. A probe entering a clump
+//     must traverse it; clumps merge as the table fills, which is why
+//     the grow threshold is far below full.
+//  - load factor: entries divided by slots. Grows at about 0.7.
+//
 // Steps:
 //  1. Construction: allocate a flat slot array, each slot holding a
 //     key, a value, and an occupied flag, all empty. Length is a

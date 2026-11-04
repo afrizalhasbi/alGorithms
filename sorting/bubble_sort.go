@@ -21,6 +21,16 @@ import "slices"
 // already-sorted input and paying the full quadratic number of
 // passes every time.
 //
+// Definitions:
+//  - pass: one walk over the unsorted part of the slice, front to back.
+//  - neighbors: two items at adjacent positions. There are len-1 pairs
+//     in a pass.
+//  - out of order: the left neighbor is strictly greater than the right.
+//     Equal neighbors are not out of order and are never swapped.
+//  - unsorted part: the prefix of the slice whose positions are not yet
+//     final. It shrinks by one item per pass; no item of the sorted
+//     suffix is ever touched again.
+//
 // Steps:
 //  1. Each pass: walk the unsorted part of the slice, compare each
 //     pair of neighbors, and swap them when they are out of order.

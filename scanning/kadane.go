@@ -23,6 +23,16 @@ package scanning
 // sums to zero. The result is therefore never negative, and an empty
 // or all-negative input gives zero.
 //
+// Definitions:
+//  - subarray: a stretch of consecutive items — no gaps, no skipping.
+//  - best ending here: the maximum sum of any subarray that ends
+//     exactly at the current position. One value per position.
+//  - extend-or-restart: the choice at each item — either the previous
+//     position's best-ending-here plus this item, or this item alone.
+//     Restart wins exactly when the carried-in sum is negative.
+//  - best so far: the maximum of all best-ending-here values seen.
+//     The returned answer.
+//
 // Steps:
 //  1. Carry two values through one pass: the best subarray sum ending
 //     at the previous position, and the best sum seen anywhere so

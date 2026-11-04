@@ -13,6 +13,16 @@ package statistics
 // range means the input is not a distribution at all and should be
 // reported rather than quietly summed.
 //
+// Definitions:
+//  - support (values): the outcomes the variable can take. Parallel to
+//     the probabilities by index: values[i] happens with probability
+//     probs[i].
+//  - distribution (valid input): non-empty, equal-length lists, every
+//     probability in the zero-one range, and the probabilities summing
+//     to one within tolerance. Anything else is reported as failure,
+//     not summed anyway.
+//  - expectation: the sum of value times probability over all entries.
+//
 // Steps:
 //  1. Validate: the two lists have the same length, every probability is
 //     at least zero and at most one, and they sum to one within a small

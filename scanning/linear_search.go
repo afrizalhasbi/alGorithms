@@ -10,6 +10,13 @@ package scanning
 // exercise pattern: read the doc, make the complexity test pass,
 // keep the implementation minimal.
 //
+// Definitions:
+//  - early exit: returning at the first equal item. What makes an
+//     early target cheap and an absent one expensive; not an
+//     optimization, the definition of the method.
+//  - worst case: target absent or last — the full scan. The shape the
+//     complexity test measures.
+//
 // Steps:
 //  1. Walk the slice from front to back, comparing each item with the
 //     target.

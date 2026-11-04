@@ -29,6 +29,20 @@ package hashing
 // small arcs instead of one big one. Randomness averages out and
 // the loads even up.
 //
+// Definitions:
+//  - circle / number line: the 32-bit unsigned hash range, treated as
+//     wrapping: the value just past the top is zero again.
+//  - mark: one (hash value, node) pair on the circle. One node has
+//     one mark per replica, stamped under slightly different names
+//     (suffix the node name with the replica index before hashing).
+//  - owner of a key: the node of the first mark at or after the key's
+//     hash, moving in increasing hash order, wrapping to the first
+//     mark if the hash is past the last one.
+//  - arc: the stretch of circle between one mark and the previous
+//     mark. Its owner owns every key hashing into it.
+//  - replicas: the number of marks per node. The test's fairness
+//     requirement is met only by raising this from 1.
+//
 // Steps:
 //  1. Construction: for each node, hash its name with a distinguishing
 //     suffix once per replica, producing that many marks. Keep all

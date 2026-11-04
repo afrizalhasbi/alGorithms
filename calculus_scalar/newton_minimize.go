@@ -24,6 +24,19 @@ package calculus
 // starting Newton on a maximum sends it away from the minimum, and the
 // test requires an honest failure.
 //
+// Definitions:
+//  - stationary point: where the first derivative is zero. What Newton
+//     on df finds; possibly a minimum, maximum, or saddle.
+//  - first derivative (df), second derivative (d2f): both supplied by
+//     the caller, hardcoded in the tests. df gives the direction,
+//     d2f the scaling and the kind of stationary point.
+//  - cupped / domed: d2f positive (locally a minimum) / negative
+//     (locally a maximum).
+//  - Newton step: current point minus df over d2f, both evaluated at
+//     the current point.
+//  - flat curvature: d2f at or near zero — the step length explodes.
+//     Reported as failure, same as the budget case.
+//
 // Steps:
 //  1. Validate: the second derivative at the starting point is not
 //     zero (or denormal-close to it).

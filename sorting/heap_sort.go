@@ -17,6 +17,20 @@ package sorting
 // shrinks the heap and grows a sorted region at the back of the
 // slice, until the heap is gone and the slice is sorted.
 //
+// Definitions:
+//  - heap condition: every item is at least as large as its children.
+//  - front / back of the heap: the front is position 0 (the largest
+//     item); the back is the last position the current heap size
+//     covers. The heap shrinks from the back as items are extracted.
+//  - children: the items at 2i+1 and 2i+2 for an item at position i,
+//     valid only while those positions are inside the current heap
+//     size. An item with no child inside the heap is a leaf.
+//  - parent: the item at (i-1)/2 for an item at position i. Every
+//     non-leaf position is a parent.
+//  - repair (sift-down): the operation in step 1. It assumes both
+//     subtrees below the item already satisfy the heap condition; that
+//     assumption is what the build order in step 2 provides.
+//
 // Steps:
 //  1. Repairing an item: compare an item with its children. If it is
 //     smaller than one of them, swap it with the larger of the two

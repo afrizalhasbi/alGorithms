@@ -45,6 +45,23 @@ type BinomialSeries struct {
 // the numerics package's LogSumExp; the fixtures include a case with
 // enough flips to make the naive product route fail.
 //
+// Definitions:
+//  - series: one BinomialSeries — heads and tails counts from an
+//     unknown coin. The coin identity (A or B) is the hidden state.
+//  - head probability (thetaA, thetaB): each coin's probability of
+//     heads. The unknowns; both start strictly between zero and one.
+//  - log-likelihood of a series under a coin: heads times log of that
+//     coin's head probability, plus tails times log of the tail
+//     probability. Computed in log space because the products underflow.
+//  - marginal log-likelihood of a series: LogSumExp of its two
+//     log-likelihoods (one per coin). Its exponential is the sum the
+//     closed form would have needed.
+//  - responsibility (of coin A for a series): the posterior probability
+//     that the series came from coin A — the exponentiated difference
+//     of the coin-A log-likelihood and the marginal.
+//  - trace: the running total log-likelihood after each iteration.
+//     It must never dip; that monotonicity is the correctness test.
+//
 // Steps:
 //  1. For each iteration: for each series, compute the log-likelihood
 //     under each coin (heads times the log of the head probability, tails
