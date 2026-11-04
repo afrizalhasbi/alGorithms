@@ -24,6 +24,15 @@ package numerics
 // This is the function the EM exercises in the statistics package use to
 // keep their responsibilities finite.
 //
+// Definitions:
+//  - maximum: the largest value in xs, compared as ordinary floats.
+//     It is used as the shift for every term, including itself.
+//  - shifted value: an item minus the maximum. Always at most zero;
+//     the item that attained the maximum has shifted value exactly zero.
+//  - inner sum: the sum of the exponentials of the shifted values. Its
+//     first term is exactly one, so it is never zero, and every term is
+//     at most one, so it can never overflow.
+//
 // Steps:
 //  1. Find the maximum of xs. (The empty input is an error case; the
 //     tests do not exercise it.)

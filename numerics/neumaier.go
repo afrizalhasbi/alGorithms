@@ -20,6 +20,19 @@ package numerics
 // ulps on friendly inputs; the fixtures in sums_desc.json are where the
 // two implementations part ways.
 //
+// Definitions:
+//  - ordinary sum: the float64 value that evaluating item + total returns.
+//    As everywhere in this package, the exact mathematical sum exists
+//    separately; the + operator rounds, so the ordinary sum is its rounded
+//    shadow. There is no rounding function.
+//  - loss: the bits that rounding threw away when forming the ordinary
+//    sum — the difference between the exact mathematical sum of item and
+//    total and the ordinary sum, in whichever of the two directions the
+//    step below describes.
+//  - compensation accumulator: unlike Kahan's, this one accumulates: each
+//    iteration's measured loss is added into it, and it is folded into
+//    the total only once, at the end of the pass.
+//
 // Steps:
 //  1. Carry two values through the pass: the running total and the
 //     compensation accumulator (initially zero).

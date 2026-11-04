@@ -27,6 +27,18 @@ package numerics
 // The tests check both, plus the classic cancellation case above, where
 // the naive two-sum formula provably fails.
 //
+// Definitions:
+//  - old mean / new mean: the running mean before and after this
+//     iteration's update. Step 2 computes values against both.
+//  - deviation (of the item): the item minus the mean it is measured
+//     against. There are two of them per item: item minus old mean, and
+//     item minus new mean. They are not the same number and are not
+//     interchangeable.
+//  - shift: the old-mean deviation divided by the new count — the amount
+//     the mean moves toward the item this iteration.
+//  - accumulator: the running sum of squared deviations. It is only ever
+//     added to, and only scaled into a variance at the very end.
+//
 // Steps:
 //  1. Carry three values through the pass: the count, the running mean,
 //     and the running accumulator of squared deviations (the last two

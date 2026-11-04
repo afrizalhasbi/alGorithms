@@ -18,6 +18,15 @@ package numerics
 // That is the same convention as the test fixture, which stores reference
 // values produced by an independent polynomial evaluator.
 //
+// Definitions:
+//  - running value: the single accumulator that carries the partially
+//     evaluated polynomial through the pass. It starts as the leading
+//     coefficient and ends as the result.
+//  - remaining coefficients: everything after the first, visited in the
+//     order they appear — highest power to constant. The loop does not
+//     re-visit the leading coefficient; it is the seed of the running
+//     value, not a loop iteration.
+//
 // Steps:
 //  1. Start the running value at the leading coefficient.
 //  2. For each remaining coefficient, in order: multiply the running value

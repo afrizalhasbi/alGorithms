@@ -22,6 +22,17 @@ import "math"
 // same sign should compare near (they are the same value), while NaN
 // compares near nothing, not even itself.
 //
+// Definitions:
+//  - absolute difference: the absolute value of a minus b. Meaningful
+//     only when neither argument is NaN.
+//  - relative tolerance (rtol): a fraction of the larger magnitude, not
+//     an ulp count. The comparison bound is rtol times the larger of the
+//     two magnitudes.
+//  - absolute floor (absFloor): a fixed comparison bound, set by the
+//     caller, used alone when the relative bound is meaningless (near
+//     zero). It is checked in addition to the relative bound, not instead
+//     of it.
+//
 // Steps:
 //  1. If both are the same exact value, including identical infinities,
 //     they are near. If either is NaN, they are not.

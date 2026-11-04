@@ -25,6 +25,17 @@ package numerics
 // is built first and the additions always add something small to something
 // at most as large as it, keeping every bit of every term.
 //
+// Definitions:
+//  - term: one summand of the series. The first term is 1, the next is x,
+//     the next is x squared over two, and so on. Terms are numbered
+//     starting at 1: term number k equals the previous term times x,
+//     divided by k.
+//  - term index: the number of the NEW term being computed, not of the
+//     previous one. Dividing by the previous index is the off-by-one.
+//  - stop condition: adding the next term to the running result leaves
+//     the result unchanged — the term is smaller than half an ulp of the
+//     total. The term budget is a hard cap independent of this test.
+//
 // Steps:
 //  1. Generate terms by recurrence: start from one; each next term is the
 //     previous term times x, divided by its term index; stop when adding a

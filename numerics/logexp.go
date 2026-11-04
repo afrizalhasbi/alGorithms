@@ -21,6 +21,17 @@ import "math"
 // can then make a real decision — clamp, reparameterize, or give up —
 // instead of debugging a NaN five functions later.
 //
+// Definitions:
+//  - failure: the ok boolean is false. The float part of the return is
+//     then a placeholder and must not be used.
+//  - overflow threshold: the argument beyond which the standard
+//     exponential returns positive infinity — about seven hundred and
+//     nine, the logarithm of the largest finite float. One test above it
+//     suffices; the failure is reported without calling math.Exp.
+//  - non-positive: zero or negative, or NaN. NaN is neither positive nor
+//     negative, but comparisons with it are false, and the spec intends
+//     it to fail.
+//
 // Steps:
 //  1. SafeLog: if the argument is positive, return its logarithm and
 //     success; otherwise return failure. NaN input is failure.

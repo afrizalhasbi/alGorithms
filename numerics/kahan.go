@@ -21,15 +21,32 @@ package numerics
 // accumulating: naive summation's error grows in proportion to the number
 // of terms, while Kahan's grows much more slowly, independently of n.
 //
+// Definitions:
+//   - temporary: the item minus the compensation. This is what actually
+//     gets added to the total this iteration.
+//   - rounding: every float64 addition rounds its exact result to the
+//     nearest representable value. There is no rounding function; the
+//   - operator itself does it. So "the sum of a and b" exists twice:
+//     as an exact mathematical value, and as the float64 that evaluating
+//     a + b returns.
+//   - predicted: the exact mathematical value of total + temporary.
+//   - new total: the float64 value that evaluating total + temporary
+//     actually returns. Same expression as "predicted"; different value,
+//     because + rounds.
+//   - compensation: predicted minus new total. The bits the rounding
+//     threw away, with the sign such that adding it back undoes the
+//     loss. It is a single per-iteration quantity, not a running sum:
+//     each iteration's value replaces the previous one.
+//
 // Steps:
 //  1. Carry three values through the pass: the running total, the
 //     compensation from the previous step (initially zero), and a temporary.
-//  2. For each item: compute the temporary as the item minus the
-//     compensation. Predict what the total will become (total plus the
-//     temporary), then compute the compensation as the difference between
-//     the predicted value and the actual rounded total — in the correct
-//     direction (predicted minus new total, added back to the temporary).
-//     Finally add the compensation to the total.
+//  2. For each item: compute the temporary (item minus compensation).
+//     Compute the compensation as predicted minus new total — that is,
+//     subtract the float64 result of total + temporary from that same
+//     sum's exact value, by writing the expression once per side and
+//     letting float subtraction expose the gap. Then add the
+//     compensation to the total.
 //  3. When the pass ends, the total is the answer. There is no early exit.
 //
 // Convention (matches the tests): the empty list sums to zero. The exact
@@ -40,6 +57,17 @@ package numerics
 // Expected: O(n)
 // Input: not mutated
 func KahanSum(xs []float64) float64 {
-	// TODO: implement
-	return 0
+	var tot = 0.
+	var comp = 0.
+	var tmp = 0.
+	// had to have major hints/spelled it out for me
+	// because the docs werent fucking clear when i
+	// tried to implement this, fuck this
+	for _, x := range xs {
+		tmp = x - comp
+		pred := tot + tmp
+		comp = pred - tot - tmp
+		tot += comp + tmp
+	}
+	return tot
 }
