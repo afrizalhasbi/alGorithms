@@ -7,51 +7,51 @@ Doing this because I believe in first-principles and understanding fundamentals,
 It feels pretty cool. I get to understand how seemingly opaque and mysterious arts work, and it improves my foundational understanding considerably. Not to mention how fun this is.
 
 An algorithm is done only when both boxes are checked:
-`go test ./<module> -run <Name> -v` (add `-out` for tests that produce artifacts) must pass for correctness and complexity.
+`go test .-<module> -run <Name> -v` (add `-out` for tests that produce artifacts) must pass for correctness and complexity.
 
 ## sorting
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
-| BubbleSort | easy | ✓ |
-| InsertionSort | easy | ✓ |
-| SelectionSort | easy | ✓ |
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
+| BubbleSort | easy | ✓ | 02-11-2026 |
+| InsertionSort | easy | ✓ | 02-11-2026 |
+| SelectionSort | easy | ✓ | 02-11-2026 |
 | MergeSort | medium | - |
 | QuickSort | medium | - |
-| HeapSort | medium | ✓ |
+| HeapSort | medium | ✓ | 02-11-2026 |
 | RadixSort | hard | - |
 | TimSort | hard | - |
 
 ## scanning
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
-| LinearSearch | easy | ✓ |
-| BinarySearch | easy | ✓ |
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
+| LinearSearch | easy | ✓ | 02-11-2026 |
+| BinarySearch | easy | ✓ | 03-11-2026 |
 | Kadane | medium | - |
-| TwoPointerDedup | medium | ✓ |
+| TwoPointerDedup | medium | ✓ | 03-11-2026 |
 | BoyerMooreMajority | medium | - |
 | KMP | hard | - |
 | RabinKarp | hard | - |
 
 ## hashing
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
-| FNV1a | easy | ✓ |
-| ChainMap | medium | - |
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
+| FNV1a | easy | ✓ | 03-11-2026 |
+| ChainMap | medium | - | 03-11-2026 |
 | OpenMap | medium | - |
 | BloomFilter | hard | - |
 | Ring | hard | - |
 
 ## numerics
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
-| KahanSum | easy | - |
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
+| KahanSum | easy | - | 04-11-2026 |
 | NeumaierSum | easy | - |
-| NearEqual | easy | - |
-| SafeLog/SafeExp | easy | - |
+| NearEqual | easy | - | 04-11-2026 |
+| SafeLog-SafeExp | easy | - | 04-11-2026 |
 | Horner | easy | - |
 | Welford | medium | - |
 | TaylorExp | medium | - |
@@ -59,8 +59,8 @@ An algorithm is done only when both boxes are checked:
 
 ## statistics
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
 | DiscreteExpectation | easy | - |
 | BayesPosterior | easy | - |
 | BinomialPMF | easy | - |
@@ -71,8 +71,8 @@ An algorithm is done only when both boxes are checked:
 
 ## calculus_scalar
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
 | Bisection | easy | - |
 | NewtonRoot | easy | - |
 | FixedPoint | easy | - |
@@ -88,8 +88,8 @@ An algorithm is done only when both boxes are checked:
 ## sampling
 
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
 | InverseDiscrete | medium | - |
 | SampleExponential | medium | - |
 | SampleTriangular | medium | - |
@@ -99,10 +99,10 @@ An algorithm is done only when both boxes are checked:
 
 ## images
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
 | FloodFill | easy | - |
-| Rotate90/FlipH | easy | - |
+| Rotate90-FlipH | easy | - |
 | BoxBlur | easy | - |
 | BresenhamLine | medium | - |
 | MidpointCircle | medium | - |
@@ -110,8 +110,8 @@ An algorithm is done only when both boxes are checked:
 
 ## audio
 
-| Algorithm | Difficulty | Done |
-|---|---|---|
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
 | SineGen | easy | - |
 | Normalize | easy | - |
 | MixClipped | easy | - |
