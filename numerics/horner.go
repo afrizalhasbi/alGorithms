@@ -19,10 +19,10 @@ package numerics
 // values produced by an independent polynomial evaluator.
 //
 // Definitions:
-//  - running value: the single accumulator that carries the partially
+//   - running value: the single accumulator that carries the partially
 //     evaluated polynomial through the pass. It starts as the leading
 //     coefficient and ends as the result.
-//  - remaining coefficients: everything after the first, visited in the
+//   - remaining coefficients: everything after the first, visited in the
 //     order they appear — highest power to constant. The loop does not
 //     re-visit the leading coefficient; it is the seed of the running
 //     value, not a loop iteration.
@@ -39,6 +39,16 @@ package numerics
 // Expected: O(n)
 // Input: not mutated
 func Horner(coeffs []float64, x float64) float64 {
-	// TODO: implement
-	return 0
+	if len(coeffs) == 0 {
+		return 0
+	}
+	var tot = coeffs[0]
+	for i, b := range coeffs {
+		if i == 0 {
+			continue
+		}
+		tot *= x
+		tot += b
+	}
+	return tot
 }
