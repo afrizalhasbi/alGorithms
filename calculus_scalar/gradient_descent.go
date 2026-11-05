@@ -1,5 +1,7 @@
 package calculus
 
+import "math"
+
 // [easy] GradientDescent minimizes a function of one variable whose
 // derivative df is supplied, starting at x0 with a fixed step size.
 //
@@ -24,17 +26,17 @@ package calculus
 // the fixture checks the rate as well as the destination.
 //
 // Definitions:
-//  - derivative (df): the supplied local slope of the target function.
+//   - derivative (df): the supplied local slope of the target function.
 //     Never estimated; the caller hardcodes it.
-//  - step size: the fixed multiplier on the derivative. One scalar for
+//   - step size: the fixed multiplier on the derivative. One scalar for
 //     the whole run, never adapted.
-//  - iterate: the current point. Updated by subtracting step size
+//   - iterate: the current point. Updated by subtracting step size
 //     times the derivative.
-//  - stability limit: for a quadratic target, step size must be below
+//   - stability limit: for a quadratic target, step size must be below
 //     two over the curvature; past it, the iteration diverges by
 //     bouncing outward. The fixture includes such a step and requires
 //     budget-exhaustion failure.
-//  - linear convergence: the error shrinks by a constant factor per
+//   - linear convergence: the error shrinks by a constant factor per
 //     step; the fixture checks that factor, not just the endpoint.
 //
 // Steps:
@@ -50,6 +52,14 @@ package calculus
 // Expected: linear convergence, two evaluations per iteration (or one,
 // if the derivative is reused from the same call)
 func GradientDescent(df func(float64) float64, x0, step, tol float64, maxIter int) (float64, bool) {
-	// TODO: implement
-	return 0, false
+	var lastX = x0
+	for range maxIter {
+		var grad = df(lastX) * step
+		curX := lastX - grad
+		if math.Abs(curX-lastX) < tol {
+			return curX, true
+		}
+		lastX = curX
+	}
+	return lastX, false
 }

@@ -49,7 +49,7 @@ An algorithm is done only when both boxes are checked:
 | Algorithm | Difficulty | Done | Date |
 |---|---|---|---|
 | KahanSum | easy | - | 04-11-2026 |
-| NeumaierSum | easy | - |
+| NeumaierSum | easy | ✓ | 05-11-2026 |
 | NearEqual | easy | - | 04-11-2026 |
 | SafeLog-SafeExp | easy | - | 04-11-2026 |
 | Horner | easy | - |
@@ -76,7 +76,7 @@ An algorithm is done only when both boxes are checked:
 | Bisection | easy | - |
 | NewtonRoot | easy | - |
 | FixedPoint | easy | - |
-| GradientDescent | easy | - |
+| GradientDescent | easy | ✓ | 05-11-2026 |
 | CentralDifference | easy | - |
 | SecantMethod | medium | - |
 | NewtonMinimize | medium | - |
