@@ -50,8 +50,8 @@ An algorithm is done only when both boxes are checked:
 |---|---|---|---|
 | KahanSum | easy | - | 04-11-2026 |
 | NeumaierSum | easy | ✓ | 05-11-2026 |
-| NearEqual | easy | - | 04-11-2026 |
-| SafeLog-SafeExp | easy | - | 04-11-2026 |
+| NearEqual | easy | ✓ | 04-11-2026 |
+| SafeLog-SafeExp | easy | ✓ | 04-11-2026 |
 | Horner | easy | ✓ | 05-11-2026 |
 | Welford | medium | - |
 | TaylorExp | medium | - |
