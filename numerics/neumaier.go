@@ -1,5 +1,7 @@
 package numerics
 
+import "math"
+
 // [easy] NeumaierSum returns the sum of xs using Neumaier's improvement of
 // Kahan's algorithm.
 //
@@ -21,17 +23,17 @@ package numerics
 // two implementations part ways.
 //
 // Definitions:
-//  - ordinary sum: the float64 value that evaluating item + total returns.
-//    As everywhere in this package, the exact mathematical sum exists
-//    separately; the + operator rounds, so the ordinary sum is its rounded
-//    shadow. There is no rounding function.
-//  - loss: the bits that rounding threw away when forming the ordinary
-//    sum — the difference between the exact mathematical sum of item and
-//    total and the ordinary sum, in whichever of the two directions the
-//    step below describes.
-//  - compensation accumulator: unlike Kahan's, this one accumulates: each
-//    iteration's measured loss is added into it, and it is folded into
-//    the total only once, at the end of the pass.
+//   - ordinary sum: the float64 value that evaluating item + total returns.
+//     As everywhere in this package, the exact mathematical sum exists
+//     separately; the + operator rounds, so the ordinary sum is its rounded
+//     shadow. There is no rounding function.
+//   - loss: the bits that rounding threw away when forming the ordinary
+//     sum — the difference between the exact mathematical sum of item and
+//     total and the ordinary sum, in whichever of the two directions the
+//     step below describes.
+//   - compensation accumulator: unlike Kahan's, this one accumulates: each
+//     iteration's measured loss is added into it, and it is folded into
+//     the total only once, at the end of the pass.
 //
 // Steps:
 //  1. Carry two values through the pass: the running total and the
@@ -50,6 +52,18 @@ package numerics
 // Expected: O(n)
 // Input: not mutated
 func NeumaierSum(xs []float64) float64 {
-	// TODO: implement
-	return 0
+	var tot = 0.
+	var comp = 0.
+	for _, x := range xs {
+		orsum := tot + x
+		var loss = 0.
+		if math.Abs(x) >= math.Abs(tot) {
+			loss = x - orsum + tot
+		} else {
+			loss = tot - orsum + x
+		}
+		comp += loss
+		tot = orsum
+	}
+	return tot + comp
 }
