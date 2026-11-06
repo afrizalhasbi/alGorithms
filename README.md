@@ -39,7 +39,7 @@ An algorithm is done only when both boxes are checked:
 | Algorithm | Difficulty | Done | Date |
 |---|---|---|---|
 | FNV1a | easy | ✓ | 03-11-2026 |
-| ChainMap | medium | - | 03-11-2026 |
+| ChainMap | medium | ✓ | 03-11-2026 |
 | OpenMap | medium | - |
 | BloomFilter | hard | - |
 | Ring | hard | - |
@@ -48,7 +48,7 @@ An algorithm is done only when both boxes are checked:
 
 | Algorithm | Difficulty | Done | Date |
 |---|---|---|---|
-| KahanSum | easy | - | 04-11-2026 |
+| KahanSum | easy | ✓ | 04-11-2026 |
 | NeumaierSum | easy | ✓ | 05-11-2026 |
 | NearEqual | easy | ✓ | 04-11-2026 |
 | SafeLog-SafeExp | easy | ✓ | 04-11-2026 |
