@@ -73,15 +73,15 @@ An algorithm is done only when both boxes are checked:
 
 | Algorithm | Difficulty | Done | Date |
 |---|---|---|---|
-| Bisection | easy | - |
-| NewtonRoot | easy | - |
-| FixedPoint | easy | - |
+| Bisection | easy | ✓ | 07-11-2026 |
+| NewtonRoot | easy | - | |
+| FixedPoint | easy | - | |
 | GradientDescent | easy | ✓ | 05-11-2026 |
-| CentralDifference | easy | - |
-| SecantMethod | medium | - |
-| NewtonMinimize | medium | - |
-| GoldenSection | medium | - |
-| MMQuartic | hard | - |
+| CentralDifference | easy | - | |
+| SecantMethod | medium | - | |
+| NewtonMinimize | medium | - | |
+| GoldenSection | medium | - | |
+| MMQuartic | hard | - | |
 
 *Note* : All derivatives are hardcoded in the test suite.
 
