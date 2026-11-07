@@ -3,6 +3,8 @@
 // derivative (supplied by the caller, never computed automatically).
 package calculus
 
+import "math"
+
 // [easy] Bisection returns a root of f on the bracket [a, b], to within
 // tol, or reports failure.
 //
@@ -27,15 +29,15 @@ package calculus
 // counts the iterations to confirm the halving law held.
 //
 // Definitions:
-//  - bracket: the interval [a, b] whose endpoints have f(a) and f(b) of
+//   - bracket: the interval [a, b] whose endpoints have f(a) and f(b) of
 //     opposite signs. The bracket, not f, is the state the iteration
 //     carries.
-//  - sign change survives: the half of the bracket on which the
+//   - sign change survives: the half of the bracket on which the
 //     endpoints still have opposite signs (or hit zero exactly).
-//  - midpoint: (a+b)/2 computed in floating point. The iteration ends
+//   - midpoint: (a+b)/2 computed in floating point. The iteration ends
 //     when the midpoint equals an endpoint in float — that is the
 //     ulp-level floor, not the tolerance.
-//  - iteration count: the number of halvings. It is predicted in
+//   - iteration count: the number of halvings. It is predicted in
 //     advance by the tolerance and verified by the test.
 //
 // Steps:
@@ -45,7 +47,7 @@ package calculus
 //     already within the tolerance, or the midpoint equals an endpoint in
 //     floating point, stop and return the midpoint.
 //  3. Otherwise keep the half that still brackets the sign change: the
-//     endpoint whose sign matches f(midpoint) is replaced by the
+//     f(endpoint) whose sign matches f(midpoint) is replaced by the
 //     midpoint. Repeat from step 2.
 //
 // Convention (matches the tests): the fixture stores the bracket, the
@@ -56,6 +58,37 @@ package calculus
 //
 // Expected: O(log of the initial width over the tolerance) evaluations
 func Bisection(f func(float64) float64, a, b, tol float64) (float64, bool) {
-	// TODO: implement
+	if a >= b || math.Signbit(f(a)) == math.Signbit(f(b)) {
+		return 0, false
+	}
+	if f(a) == 0 {
+		return a, true
+	}
+	if f(b) == 0 {
+		return b, true
+	}
+
+	var lo = a
+	var hi = b
+
+	for true {
+		mid := (lo + hi) / 2.
+		midf := f(mid)
+
+		if midf == 0 || math.Abs(hi-lo) < tol || mid == hi || mid == lo {
+			return mid, true
+		}
+
+		lof := f(lo)
+		hif := f(hi)
+
+		if math.Signbit(lof) == math.Signbit(midf) {
+			lo = mid
+		}
+		if math.Signbit(hif) == math.Signbit(midf) {
+			hi = mid
+		}
+
+	}
 	return 0, false
 }
