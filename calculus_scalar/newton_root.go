@@ -24,27 +24,27 @@ package calculus
 // reported as failure, exactly like the slope problem.
 //
 // Definitions:
-//  - slope (df): the derivative at the current point, supplied by the
-//     caller. A zero (or near-zero) slope means an undefined step —
-//     reported as failure, not divided through.
-//  - tangent: the first-order model of f at the current point. Its
+//   - slope (df): the derivative at the current point, supplied by the
+//     caller. A slope of exactly zero means an undefined step —
+//     reported as failure, not divided through. A very small nonzero
+//     slope is left to the division; no near-zero cut-off is required.
+//   - tangent: the first-order model of f at the current point. Its
 //     zero crossing is the next iterate.
-//  - Newton step: current point minus f at the current point, over
+//   - Newton step: current point minus f at the current point, over
 //     the slope at the current point.
-//  - iterate: the current guess. The step and the function value at
+//   - iterate: the current guess. The step and the function value at
 //     the iterate are the two stopping criteria.
-//  - budget exhaustion: the iteration cap reached without meeting the
+//   - budget exhaustion: the iteration cap reached without meeting the
 //     tolerance. A correctness requirement — cycling and divergence
 //     are real outcomes, not edge cases.
 //
 // Steps:
-//  1. Validate: the slope at the starting point is not zero (or
-//     denormal-close to it).
+//  1. Validate: the slope at the starting point is not exactly zero.
 //  2. Step: subtract the function value over the slope from the current
 //     point.
-//  3. Stop when the absolute step, or the function value, is within the
-//     tolerance; stop with failure if the slope is zero or the iteration
-//     budget is exhausted first.
+//  3. Stop when the absolute step, or the absolute function value, is at
+//     most the tolerance; stop with failure if the slope is exactly zero
+//     or the iteration budget is exhausted first.
 //
 // Convention (matches the tests): the fixture stores the function's
 // identity, the root computed to forty digits by an independent library,
@@ -54,6 +54,9 @@ package calculus
 // Expected: O(1) evaluations for a simple root — the budget exists for
 // the non-converging cases
 func NewtonRoot(f, df func(float64) float64, x0, tol float64, maxIter int) (float64, bool) {
+	if df(x0) == 0 {
+		return 0, false
+	}
 	// TODO: implement
 	return 0, false
 }

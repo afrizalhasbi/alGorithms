@@ -24,30 +24,27 @@ package numerics
 // Definitions:
 //   - temporary: the item minus the compensation. This is what actually
 //     gets added to the total this iteration.
-//   - rounding: every float64 addition rounds its exact result to the
-//     nearest representable value. There is no rounding function; the
-//   - operator itself does it. So "the sum of a and b" exists twice:
-//     as an exact mathematical value, and as the float64 that evaluating
-//     a + b returns.
-//   - predicted: the exact mathematical value of total + temporary.
-//   - new total: the float64 value that evaluating total + temporary
-//     actually returns. Same expression as "predicted"; different value,
-//     because + rounds.
-//   - compensation: predicted minus new total. The bits the rounding
-//     threw away, with the sign such that adding it back undoes the
-//     loss. It is a single per-iteration quantity, not a running sum:
-//     each iteration's value replaces the previous one.
+//   - rounded sum: the float64 value that adding the total and the
+//     temporary actually returns. Every float64 addition rounds its
+//     exact result to the nearest representable value; there is no
+//     separate rounding function.
+//   - compensation: the part of the addition that the rounding threw
+//     away, carried to the next iteration with the sign that makes
+//     subtracting it from the next item restore the lost bits. It is a
+//     single per-iteration quantity, not a running sum: each iteration's
+//     value replaces the previous one.
 //
 // Steps:
-//  1. Carry three values through the pass: the running total, the
-//     compensation from the previous step (initially zero), and a temporary.
-//  2. For each item: compute the temporary (item minus compensation).
-//     Compute the compensation as predicted minus new total — that is,
-//     subtract the float64 result of total + temporary from that same
-//     sum's exact value, by writing the expression once per side and
-//     letting float subtraction expose the gap. Then add the
-//     compensation to the total.
-//  3. When the pass ends, the total is the answer. There is no early exit.
+//  1. Carry two values through the pass: the running total and the
+//     compensation from the previous step (initially zero).
+//  2. For each item: subtract the compensation from the item to form
+//     the temporary, form the rounded sum of the total and the
+//     temporary, then recover the rounding loss as the rounded sum
+//     minus the total minus the temporary, evaluated in that order.
+//     Store that loss as the new compensation, and set the total to the
+//     rounded sum.
+//  3. When the pass ends, the total is the answer. The final
+//     compensation is not added again. There is no early exit.
 //
 // Convention (matches the tests): the empty list sums to zero. The exact
 // reference sums in the test fixtures were computed with rational

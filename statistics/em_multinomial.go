@@ -53,24 +53,29 @@ package statistics
 //     All M-step estimates are ratios of these sums.
 //
 // Steps:
-//  1. Validate: every observation sums to the same non-zero total? No —
-//     observations may have different totals; what must hold is that
-//     every count is non-negative, every mixing weight is positive, and
-//     every component's face probabilities are positive and sum to one.
-//  2. E step, per observation: log-weights and log-likelihoods per
-//     component; LogSumExp for the marginal; exponentiated differences
-//     for the responsibilities. Accumulate the marginals into the
-//     iteration's log-likelihood.
+//  1. Validate: every observation has non-negative counts; both mixing
+//     weights are positive and sum to one; every component's face
+//     probabilities are positive and sum to one. Observations may have
+//     different totals.
+//  2. E step, per observation: using the parameters at the start of the
+//     iteration, compute the log-weights and log-likelihoods per
+//     component; use LogSumExp for the marginal; take exponentiated
+//     differences for the responsibilities. Accumulate the marginals
+//     into the iteration's log-likelihood.
 //  3. M step: re-estimate the mixing weight from total responsibilities;
 //     re-estimate each face probability as responsibility-weighted counts
 //     normalized within the component.
-//  4. Repeat for the given number of iterations, appending the
-//     log-likelihood of each iteration to the returned trace.
+//  4. Append each iteration's log-likelihood to the trace after that
+//     iteration's expectation step and before its maximization step. The
+//     first entry therefore uses the initial parameters, and the trace
+//     has exactly as many entries as the iteration count.
 //
 // Convention (matches the tests): the fixture stores the observations,
 // the initial parameters, the converged mixing weight and probability
 // table, and a short log-likelihood trace head; parameter estimates must
 // match to four decimal places and the trace must be non-decreasing.
+// The returned mixing weight has two entries in component order, summing
+// to one. All returned slices are new; the inputs are not mutated.
 //
 // Expected: O(observations times faces per iteration)
 // Input: not mutated

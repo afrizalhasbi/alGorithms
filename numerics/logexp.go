@@ -36,8 +36,9 @@ import "math"
 //  1. SafeLog: if the argument is positive, return its logarithm and
 //     success; otherwise return failure. NaN input is failure.
 //  2. SafeExp: if the argument is within the representable range, return
-//     its exponential and success; otherwise return failure. (Negative
-//     arguments never fail; they underflow to a legal, harmless zero.)
+//     its exponential and success; otherwise return failure. NaN is
+//     failure in both wrappers. Negative finite arguments never fail;
+//     they underflow to a legal, harmless zero.
 //
 // Convention (matches the tests): the overflow threshold is the argument
 // beyond which the standard exponential returns infinity; a result of

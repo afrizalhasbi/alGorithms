@@ -21,8 +21,9 @@ import "alGorithms/internal/audio"
 // decay^k * in[t - k*delay] over the repeats reaching t.
 //
 // Definitions:
-//  - delay: the echo gap in samples, delayMs converted at the buffer
-//     sample rate.
+//  - delay: the echo gap in samples, obtained from the delay in
+//     milliseconds times the buffer's sample rate divided by one
+//     thousand, with the result truncated to an integer.
 //  - decay: the per-repeat gain, 0 < decay < 1 (a decay of 1 would
 //     never get quieter; above 1 would explode).
 //  - repeats: how many delayed copies are added, not counting the
@@ -30,11 +31,14 @@ import "alGorithms/internal/audio"
 //  - dry/wet: the unmodified input ("dry") and the echo tail ("wet").
 //
 // Steps:
-//  1. Allocate output length = len(in) + delay*repeats, copy the dry
-//     signal in as ints (with headroom for accumulation).
-//  2. For each repeat k from 1 to repeats, add decay^k * in[i] to
-//     output position i + k*delay.
-//  3. Clamp every accumulated sample to int16.
+//  1. Allocate output length = len(in) + delay*repeats and copy the dry
+//     signal into it as floating-point accumulators.
+//  2. For each repeat k from 1 to repeats, add decay^k times the input
+//     sample to the output position k delays later. Every repeat is
+//     accumulated before any rounding, so the rounding happens once per
+//     output sample, not once per repeat.
+//  3. Round every accumulated sample to the nearest integer, then clamp
+//     it to the int16 range.
 //
 // Notes:
 //   - The test checks the output length, that out[t] matches the

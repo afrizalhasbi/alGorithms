@@ -46,7 +46,9 @@ package sorting
 //  1. A slice with one or zero items is already sorted.
 //  2. Find the largest value. It decides how many passes are needed:
 //     keep passing while some item still has an unprocessed digit,
-//     starting at the least significant one.
+//     starting at the least significant one. A largest value of zero
+//     has no unprocessed digit, so it needs no passes and the slice is
+//     already sorted.
 //  3. One pass, for the current digit:
 //     a. Count the items carrying each of the 16 digit values.
 //     b. Convert counts to starting positions, so each digit value

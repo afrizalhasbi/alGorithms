@@ -33,12 +33,19 @@ import "alGorithms/internal/bitmap"
 //     each coordinate — the line has no gaps.
 //
 // Steps:
-//  1. Compute dx = x1-x0, dy = y1-y0 and the integer error term.
+//  1. Compute dx = x1-x0, dy = y1-y0 and the integer error term. The
+//     error starts at the value that places the first decision halfway
+//     between the two candidate pixels.
 //  2. Step along the major axis one pixel at a time; at each step,
 //     move the minor axis by one when the error term crosses its
 //     threshold and subtract the threshold from the error.
-//  3. Color each visited pixel, including both endpoints, and stop
-//     after the endpoint is colored.
+//  3. When the error lies exactly on the threshold, break the tie in a
+//     way that does not depend on which endpoint was named first. The
+//     test draws every line in both directions and requires the same
+//     set of pixels, so a tie rule that favors one endpoint will fail.
+//  4. Color each visited pixel, including both endpoints, and stop
+//     after the endpoint is colored. If the endpoints coincide, paint
+//     that single pixel.
 //
 // Notes:
 //   - The test checks both endpoints are drawn, every drawn pixel is

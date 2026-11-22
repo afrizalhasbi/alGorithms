@@ -55,9 +55,10 @@ package hashing
 //     not copied positionally.
 //
 // Steps:
-//  1. Construction: allocate a bucket array whose length is a power
-//     of two large enough for the size hint, and start the entry
-//     count at zero. Each slot starts as an empty chain. A power of
+//  1. Construction: allocate a bucket array whose length is the
+//     smallest power of two at least twice the size hint (and at least
+//     one), and start the entry count at zero. Each slot starts as an
+//     empty chain. A power of
 //     two matters because a bucket is picked by keeping only the low
 //     bits of the hash (hash & (n-1)), which works exactly when the
 //     count is a power of two.

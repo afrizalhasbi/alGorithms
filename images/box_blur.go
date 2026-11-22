@@ -33,7 +33,9 @@ import "alGorithms/internal/bitmap"
 //
 // Steps:
 //  1. For each pixel and channel, sum the clipped window and divide
-//     by the count of pixels in it (integer rounding is fine).
+//     by the count of pixels in it, rounding to the nearest integer.
+//     A negative radius is treated as zero, which returns an unchanged
+//     copy.
 //  2. Write the averaged pixel into a new buffer; the source must
 //     not be mutated mid-blur, or later windows would average already
 //     blurred values.

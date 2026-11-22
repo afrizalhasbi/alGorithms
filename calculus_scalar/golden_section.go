@@ -34,11 +34,14 @@ package calculus
 //  - unimodal: f decreases then increases on the bracket — one valley.
 //     The contract of the whole method; violated, it converges happily
 //     to a wrong local minimum.
-//  - interior points: the two evaluation positions inside [a, b], each
-//     the golden conjugate fraction of the width in from its nearer
-//     end, symmetric about the middle.
-//  - golden conjugate fraction: 1 minus the golden ratio conjugate,
-//     about 0.382 of the width from each end.
+//  - interior points: the two evaluation positions inside [a, b],
+//     symmetric about the middle. The left one sits at 0.382 of the
+//     width from the left end and the right one at 0.618 of the width
+//     from the left end. Equivalently, each is 0.382 of the width in
+//     from its nearer end.
+//  - golden-ratio conjugate: (sqrt(5)-1)/2, about 0.618. The 0.382
+//     fraction is one minus it. The decimals are shorthand: use the
+//     exact conjugate, not the rounded value, in the probe positions.
 //  - reuse: after discarding a side, one interior point of the new
 //     bracket sits exactly where the next comparison needs a point;
 //     only one fresh evaluation per step.
@@ -47,21 +50,24 @@ package calculus
 //
 // Steps:
 //  1. Validate: a is less than b.
-//  2. Place two interior points: one at a plus the golden conjugate
-//     fraction of the width from the right, one at the same fraction
-//     from the left — so the two points sit symmetric around the middle,
-//     each a golden fraction of the bracket in from its nearer end.
-//  3. Compare f at the two points: keep the side containing the lower
-//     one by moving the nearer endpoint inward past it.
-//  4. Reuse: the surviving interior point of the new bracket is at
-//     exactly the right position for the next comparison; only the
-//     missing second point needs evaluating.
+//  2. Place the left probe at 0.382 of the way from a to b, and the
+//     right probe at 0.618 of the way from a to b.
+//  3. Compare the function at the two probes. If the left probe is
+//     lower, discard everything to the right of the right probe, so the
+//     new bracket runs from a to the old right probe. Otherwise discard
+//     everything to the left of the left probe, so the new bracket runs
+//     from the old left probe to b. If the two values are exactly equal,
+//     either side may be kept; both contain a minimum under unimodality.
+//  4. Reuse: the surviving probe of the new bracket is exactly where
+//     one of the next step's probes belongs; only the other probe needs
+//     a fresh evaluation.
 //  5. Stop when the bracket width is within the tolerance; return the
 //     midpoint of the final bracket.
 //
 // Convention (matches the tests): the fixture stores minimizers computed
-// to forty digits and the exact expected iteration count implied by the
-// shrink factor and the tolerance.
+// to forty digits and the iteration count implied by the shrink factor
+// and the tolerance. The test verifies the minimizer directly and uses
+// the count only for reference.
 //
 // Expected: O(log of the initial width over the tolerance) evaluations,
 // one per iteration

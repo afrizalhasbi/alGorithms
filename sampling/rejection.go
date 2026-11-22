@@ -46,9 +46,11 @@ import "math/rand"
 //     with the theoretical one.
 //
 // Steps:
-//  1. Validate: m is at least the sup of the ratio of target to envelope
-//     densities (the caller's responsibility; the tests use m from the
-//     fixture), and the densities are non-negative.
+//  1. Validate: m is positive and at least the sup of the ratio of
+//     target to envelope densities (the caller's responsibility; the
+//     tests use m from the fixture), and the densities are
+//     non-negative. A non-positive m or a sample count below one is
+//     invalid and returns no samples with zero candidates consumed.
 //  2. Repeat until n samples are banked: draw a candidate from the
 //     envelope sampler (supplied by the caller, so the test controls it
 //     through the seeded generator), draw a uniform; accept the candidate

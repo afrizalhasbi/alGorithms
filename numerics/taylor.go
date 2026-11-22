@@ -32,17 +32,22 @@ package numerics
 //     divided by k.
 //  - term index: the number of the NEW term being computed, not of the
 //     previous one. Dividing by the previous index is the off-by-one.
-//  - stop condition: adding the next term to the running result leaves
-//     the result unchanged — the term is smaller than half an ulp of the
-//     total. The term budget is a hard cap independent of this test.
+//  - stop condition: generation stops when adding the newest term to
+//     the forward total of the terms generated so far would not change
+//     that total — the term is no larger than half an ulp of it. This
+//     test decides only when to stop generating terms; it is not the
+//     order in which the terms are finally summed.
+//  - term budget: the maximum number of terms generated, counting the
+//     first term as one. It is a hard cap independent of the stop
+//     condition.
 //
 // Steps:
 //  1. Generate terms by recurrence: start from one; each next term is the
-//     previous term times x, divided by its term index; stop when adding a
-//     new term to the running result would not change it (the term is
-//     smaller than half an ulp of the total) or when the term budget runs
-//     out.
-//  2. Sum the terms smallest-first as described above.
+//     previous term times x, divided by its term index; stop when the
+//     newest term would not change the forward total of the terms
+//     generated so far, or when the term budget runs out.
+//  2. Sum the generated terms smallest-first as described above. The
+//     forward total used by the stop test is not the answer.
 //
 // Convention (matches the tests): the term budget bounds the loop for
 // large or negative x; the reference is the standard library's Exp within

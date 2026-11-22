@@ -34,8 +34,8 @@ package numerics
 //     at most one, so it can never overflow.
 //
 // Steps:
-//  1. Find the maximum of xs. (The empty input is an error case; the
-//     tests do not exercise it.)
+//  1. Find the maximum of xs. The empty input has an empty sum, whose
+//     logarithm is negative infinity; return negative infinity.
 //  2. Sum the exponentials of every item minus the maximum. This inner
 //     sum may be computed with an ordinary pass; the stable-sum routines
 //     in this package are optional but harmless here.

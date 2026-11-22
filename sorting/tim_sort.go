@@ -33,7 +33,8 @@ package sorting
 //     strictness is load-bearing: equal items must not end up in a run
 //     that gets reversed, or stability is lost.
 //  - minimum run length: the threshold below which a found run gets
-//     extended with following items via binary insertion sort.
+//     extended with following items via binary insertion sort. Use 32,
+//     or the whole slice when it is shorter than 32.
 //  - binary insertion sort: insertion sort whose walk (see
 //     insertion_sort) is replaced by a binary search for the key's
 //     position, followed by the shift.
@@ -46,11 +47,13 @@ package sorting
 //     length by sorting following items into it. Run finding and
 //     extending are one interleaved walk: find a run, extend it to
 //     the minimum length, then continue scanning from the extended
-//     run's end.
+//     run's end. If fewer items remain than the extension needs, extend
+//     the run to the end of the slice.
 //  2. Merge the runs pairwise: repeatedly take the two leftmost runs
 //     and merge them into one run (using the stable merge described
 //     in merge sort), then continue with the new run list. Each sweep
-//     halves the number of runs.
+//     halves the number of runs. If a sweep ends with one run left
+//     over, carry it unchanged into the next sweep.
 //  3. Stop when a single run covers the whole slice. Sorted input is
 //     one single run, so the merge phase does nothing at all, which
 //     is where the linear best case comes from.

@@ -34,12 +34,16 @@ import "alGorithms/internal/bitmap"
 //     rasterization slack of the ideal radius.
 //
 // Steps:
-//  1. Start at (x', y') = (0, r) with the initial decision variable
-//     for the midpoint between (0, r) and (0, r-1).
-//  2. While x' <= y': color all 8 mirrored pixels around the center;
-//     advance x' by one; update the decision variable by its integer
-//     increment, and when it says the midpoint passed outside the
-//     circle, decrement y' and apply the correction increment.
+//  1. Start at (x', y') = (0, r). The initial decision value is one
+//     minus the radius, the midpoint test between (0, r) and (0, r-1).
+//  2. While x' <= y': color all 8 mirrored pixels around the center,
+//     then advance x' by one.
+//  3. If the decision value is negative, the midpoint is inside the
+//     circle: keep y' and add twice the new x' plus one to the decision
+//     value. Otherwise the midpoint is on or outside the circle:
+//     decrement y' first, then add twice the difference between the new
+//     x' and the new y', plus one.
+//  4. Repeat until x' exceeds y'.
 //
 // Notes:
 //   - The test checks every drawn pixel is within 1 pixel of distance

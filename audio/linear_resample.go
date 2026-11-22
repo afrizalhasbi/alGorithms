@@ -11,8 +11,10 @@ import "alGorithms/internal/audio"
 // sample points, the values are unknown, and linear interpolation
 // fills the gaps with straight lines: the output sample at input
 // position p is the blend (1-frac)*in[floor(p)] + frac*in[floor(p)+1],
-// where p = i * inLen/outLen maps output index i back into the input
-// timeline and frac is the fractional part of p.
+// where p = i * (inLen-1)/(outLen-1) maps output index i back into the
+// input timeline and frac is the fractional part of p. The endpoints
+// align exactly: the first output sample reads the first input sample
+// and the last output sample reads the last input sample.
 //
 // Linear interpolation is the cheapest useful interpolator. It is
 // exact on any signal that is already linear between samples —
@@ -23,9 +25,10 @@ import "alGorithms/internal/audio"
 // right index to inLen-1 anyway to guard rounding.
 //
 // Definitions:
-//  - resample factor: output length = round(inLen * factor). Here
-//     the factor is given as a ratio outRate/inRate of two sample
-//     rates, and the output sample rate is outRate.
+//  - resample factor: output length = inLen * factor rounded to the
+//     nearest integer, but at least one. Here the factor is given as a
+//     ratio outRate/inRate of two sample rates, and the output sample
+//     rate is outRate.
 //  - source position p: the input-timeline location of output sample
 //     i, p = i * (inLen-1) / (outLen-1) so both ends align exactly.
 //  - frac: the interpolation weight on the right neighbor, the
@@ -35,9 +38,12 @@ import "alGorithms/internal/audio"
 //     the ramp-slope check.
 //
 // Steps:
-//  1. Compute outLen = round(inLen * outRate / inRate) and allocate.
-//  2. For each output i, compute p, floor, frac, and write the
-//     blended value, rounded to int16.
+//  1. Compute the output length as inLen times outRate over inRate,
+//     rounded to the nearest integer and never below one, then
+//     allocate the output buffer.
+//  2. For each output position, compute the source position p, its
+//     floor, and its fractional part, then write the blended value
+//     rounded to the nearest int16.
 //
 // Notes:
 //   - The test checks the output length, that resampling a DC signal

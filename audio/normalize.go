@@ -24,6 +24,8 @@ import "alGorithms/internal/audio"
 //
 // Definitions:
 //  - peak: max |sample| over the buffer, 0 for silence.
+//  - target: the wanted peak amplitude. It is non-negative; a negative
+//     target is invalid input and outside this contract.
 //  - scale factor: target/peak as a float, computed once.
 //  - shape preservation: out[i]/out[j] == in[i]/in[j] for all pairs,
 //     up to int16 rounding.

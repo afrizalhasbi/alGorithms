@@ -28,9 +28,11 @@ import "alGorithms/internal/bitmap"
 // Steps:
 //  1. Sample the seed color at (x,y). If the target color equals it,
 //     there is nothing to do.
-//  2. Enqueue the seed. Repeat while the queue is not empty: pop a
-//     pixel, color it, and enqueue each in-range 4-neighbor whose
-//     color is still the seed color.
+//  2. Enqueue the seed and color it immediately. Repeat while the queue
+//     is not empty: dequeue a pixel, then enqueue each in-range
+//     4-neighbor whose color is still the seed color, coloring each
+//     neighbor as it is enqueued. A pixel is never colored twice because
+//     its color changes before it can be reached again.
 //
 // Notes:
 //   - The buffer is mutated in place and also returned for chaining.

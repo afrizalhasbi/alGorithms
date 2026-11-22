@@ -39,9 +39,10 @@ package statistics
 //     whichever end is nearer to k.
 //
 // Steps:
-//  1. Validate: n at least zero, p in the zero-one range, k in the
-//     zero-to-n range. Out-of-range k is a probability of zero (no
-//     successes in zero trials), not an error; a bad p is an error.
+//  1. Validate: n is at least zero and p lies in the zero-one range. A
+//     bad n or p returns zero with a false success flag. A k outside
+//     the zero-to-n range is not an error: an impossible count has
+//     probability zero, so return zero with a true success flag.
 //  2. Choose the nearer end: either start at the all-failures point
 //     probability (one times the failure probability raised to n) and
 //     climb up with the ratio above, or start at the all-successes point

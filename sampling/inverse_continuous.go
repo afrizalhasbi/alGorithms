@@ -32,14 +32,16 @@ package sampling
 //     minus u (not u) in the logarithm. Legal alternates exist that
 //     give the same distribution but different samples; the fixture
 //     pins this one.
-//  - branch split: where a piecewise inverse changes formula — at the
-//     CDF's value at the peak (one half here). A draw exactly on the
-//     split belongs to the lower branch.
+//  - invalid input: a rate at or below zero, or any uniform outside
+//     the half-open interval, is refused by returning no samples at
+//     all. The function has no error value, so this is its only way to
+//     report failure.
 //
 // Steps:
-//  1. Validate: the rate is positive; every u lies in [0, 1).
-//  2. For each u: return minus the natural logarithm of (one minus u),
-//     divided by the rate.
+//  1. Validate: the rate is positive and every uniform lies in
+//     [0, 1). If any input fails, return no samples.
+//  2. For each valid uniform: return minus the natural logarithm of
+//     one minus that uniform, divided by the rate.
 //
 // Convention (matches the tests): the fixture stores uniforms and the
 // expected samples computed with the convention "minus log of one
@@ -55,16 +57,31 @@ func SampleExponential(rate float64, us []float64) []float64 {
 // SampleTriangular samples from a triangular distribution on the
 // interval from zero to two, with its peak at one, by inverting the CDF
 // piecewise. The CDF is a quadratic on each side of the peak, so the
-// inverse is a square root on each side: below the median, the square
-// root of two u; above it, two minus the square root of two times
-// (one minus u). This is the shape of the exercise: not every inverse
-// needs to exist in closed form, but when a piecewise one does, the
-// branches split at the CDF's value at the peak — one half here — and
-// the fixture's uniforms straddle that split exactly.
+// inverse is a square root on each side: at or below the median the
+// sample is the square root of twice the uniform; above the median it
+// is two minus the square root of twice one minus the uniform. This is
+// the shape of the exercise: not every inverse needs to exist in closed
+// form, but when a piecewise one does, the branches split at the CDF's
+// value at the peak — one half here — and the fixture's uniforms
+// straddle that split exactly.
 //
-// Convention (matches the tests): same uniform convention as
-// SampleExponential; the u equal to exactly one half belongs to the
-// lower branch, where both branches agree.
+// Definitions:
+//  - the uniform convention: every draw lies in [0, 1). Unlike
+//     SampleExponential, the lower branch uses the uniform directly;
+//     only the upper branch uses one minus the uniform.
+//  - the split: the uniform value one half, where the two branches
+//     meet and agree. A draw of exactly one half belongs to the lower
+//     branch.
+//  - invalid input: any uniform outside [0, 1) is refused by returning
+//     no samples at all, since the function has no error value.
+//
+// Steps:
+//  1. Validate: every uniform lies in [0, 1). If any input fails,
+//     return no samples.
+//  2. For each uniform at or below one half, return the square root of
+//     twice the uniform.
+//  3. For each uniform above one half, return two minus the square root
+//     of twice one minus the uniform.
 //
 // Expected: O(draws)
 func SampleTriangular(us []float64) []float64 {

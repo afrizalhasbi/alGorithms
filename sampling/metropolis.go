@@ -33,8 +33,10 @@ import "math/rand"
 // the seed — otherwise reproducing a run twice becomes impossible.
 //
 // Definitions:
-//  - chain state: the current point of the random walk. Every state,
-//     accepted or not, is recorded as a sample candidate.
+//  - chain state: the current point of the random walk. Every state
+//     after a proposal, accepted or not, is recorded. The starting
+//     point is not recorded on its own, so the returned chain has
+//     exactly one entry per iteration.
 //  - proposal: the current state plus a uniform step from minus delta
 //     to delta. The proposal is symmetric — the step distribution
 //     makes proposal and reverse proposal equally likely — which is
@@ -59,7 +61,9 @@ import "math/rand"
 //     the threshold is below the ratio of the target at the proposal to
 //     the target at the current state (and always accept when the
 //     current state has zero density); otherwise stay.
-//  3. Record every state, accepted or not, in order.
+//  3. Record the state after each proposal, accepted or not, in order.
+//     Do not record the starting point separately; the returned length
+//     equals the iteration count.
 //
 // Convention (matches the tests): the fixture's target is the standard
 // normal (up to its normalizing constant, which the implementation must

@@ -51,11 +51,9 @@ package numerics
 //  3. Return the mean, and the accumulator scaled for sample and for
 //     population variance.
 //
-// Convention (matches the tests): the empty input has no mean or variance;
-// a single item has mean but zero sample variance only in the population
-// sense (the sample variance of one observation is undefined; the tests
-// only exercise inputs of at least two items, and expect the sample
-// variance call to handle it as zero).
+// Convention: the empty input returns zero for the mean and for both
+// variances. A single item returns that item as the mean and zero for
+// both variances. The tests exercise inputs of at least two items.
 //
 // Expected: O(n), one pass
 // Input: not mutated

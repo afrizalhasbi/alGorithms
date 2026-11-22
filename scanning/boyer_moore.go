@@ -47,8 +47,10 @@ package scanning
 //  1. An empty slice has no candidate: report "no majority".
 //  2. First pass, over the whole slice: no candidate yet means the
 //     current item becomes the candidate with count one; otherwise
-//     the count moves up on a match and down on a mismatch, and a
-//     count reaching zero hands candidacy to the next item.
+//     the count moves up on a match and down on a mismatch. When a
+//     mismatch takes the count from one to zero, the item after the
+//     mismatching one starts a new candidacy; the mismatching item
+//     itself does not become the candidate.
 //  3. Second pass, over the whole slice: count occurrences of the
 //     candidate. The scan never stops early.
 //  4. More than half: return the candidate and true. Otherwise return

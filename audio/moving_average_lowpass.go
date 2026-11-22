@@ -24,7 +24,9 @@ import "alGorithms/internal/audio"
 //
 // Definitions:
 //  - window: the k samples ending at position i (a causal filter:
-//     it uses the past only).
+//     it uses the past only). The window length is at least one; a
+//     length of one is the identity, and a value below one is invalid
+//     and yields no output.
 //  - DC: a constant signal. Its average is itself, so gain at DC is
 //     exactly 1.
 //  - gain at frequency f: output amplitude divided by input
@@ -36,7 +38,7 @@ import "alGorithms/internal/audio"
 //  1. Keep a running int sum of the current window.
 //  2. For each sample: add it to the sum; if the window is full,
 //     subtract the sample k positions back; divide by the number of
-//     samples actually in the window and round.
+//     samples actually in the window and round to the nearest integer.
 //
 // Notes:
 //   - The test checks DC passes exactly, a slow sine passes with

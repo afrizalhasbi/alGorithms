@@ -38,23 +38,27 @@ import "math"
 //     when the midpoint equals an endpoint in float — that is the
 //     ulp-level floor, not the tolerance.
 //   - iteration count: the number of halvings. It is predicted in
-//     advance by the tolerance and verified by the test.
+//     advance by the tolerance and recorded by the fixture for
+//     reference.
 //
 // Steps:
-//  1. Validate: a is less than b, and f(a) times f(b) is negative (or
-//     one of them is zero — an endpoint is already a root).
+//  1. Validate: a is less than b, and f(a) and f(b) have opposite
+//     signs (or one of them is exactly zero — an endpoint is already a
+//     root). Compare the signs directly rather than multiplying the two
+//     values, whose product can overflow or underflow.
 //  2. Compute the midpoint. If f(midpoint) is zero, or the bracket is
 //     already within the tolerance, or the midpoint equals an endpoint in
 //     floating point, stop and return the midpoint.
 //  3. Otherwise keep the half that still brackets the sign change: the
-//     f(endpoint) whose sign matches f(midpoint) is replaced by the
+//     f whose f(.) sign matches f(midpoint) is replaced by the
 //     midpoint. Repeat from step 2.
 //
 // Convention (matches the tests): the fixture stores the bracket, the
 // root computed to forty digits with an independent library, and the
-// number of iterations the halving law predicts; the returned point must
-// be within the tolerance of the true root, and the iteration count must
-// match the prediction.
+// number of iterations the halving law predicts. The test checks that
+// the returned point is within the tolerance of the true root and that
+// non-bracketing input fails; it records the iteration prediction but
+// does not require the implementation to match it.
 //
 // Expected: O(log of the initial width over the tolerance) evaluations
 func Bisection(f func(float64) float64, a, b, tol float64) (float64, bool) {

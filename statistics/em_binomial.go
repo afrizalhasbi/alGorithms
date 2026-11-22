@@ -54,27 +54,33 @@ type BinomialSeries struct {
 //     coin's head probability, plus tails times log of the tail
 //     probability. Computed in log space because the products underflow.
 //  - marginal log-likelihood of a series: LogSumExp of its two
-//     log-likelihoods (one per coin). Its exponential is the sum the
-//     closed form would have needed.
+//     log-likelihoods (one per coin). The constant one-half mixture
+//     factor is omitted from the trace, because it adds the same
+//     constant at every iteration and changes neither the
+//     responsibilities nor the monotonicity.
 //  - responsibility (of coin A for a series): the posterior probability
 //     that the series came from coin A — the exponentiated difference
-//     of the coin-A log-likelihood and the marginal.
+//     of the coin-A log-likelihood and the marginal. The coin-B
+//     responsibility is one minus this value.
 //  - trace: the running total log-likelihood after each iteration.
 //     It must never dip; that monotonicity is the correctness test.
 //
 // Steps:
 //  1. For each iteration: for each series, compute the log-likelihood
 //     under each coin (heads times the log of the head probability, tails
-//     times the log of the tail probability) and combine the two coins'
-//     values with LogSumExp to get the series' marginal log-likelihood.
-//     Accumulate that into the running log-likelihood.
+//     times the log of the tail probability) using the head probabilities
+//     at the start of the iteration, and combine the two coins' values
+//     with LogSumExp to get the series' marginal log-likelihood.
+//     Accumulate that into the iteration's log-likelihood.
 //  2. Still in the E step: each series' responsibility for coin A is the
 //     difference of its coin-A log-likelihood and the marginal, exponentiated.
 //  3. M step: the new head probability of a coin is the
 //     responsibility-weighted head count over the responsibility-weighted
 //     total flips, across all series.
-//  4. Repeat for the given number of iterations, accumulating the
-//     log-likelihood per iteration into the returned trace.
+//  4. Append each iteration's log-likelihood to the trace after that
+//     iteration's expectation step and before its maximization step.
+//     The first entry therefore uses the initial head probabilities,
+//     and the trace has exactly as many entries as the iteration count.
 //
 // Convention (matches the tests): the fixture stores the series, the
 // initial probabilities, the converged estimates from an independent

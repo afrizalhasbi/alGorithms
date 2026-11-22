@@ -47,12 +47,18 @@ package sorting
 //
 // Steps:
 //  1. Exit condition: a range of one or zero items is sorted.
-//  2. Choose the pivot at random, using one random generator created
-//     once and shared by the whole recursion, so results are
-//     reproducible.
+//  2. Choose the pivot uniformly at random from the current range, using
+//     one generator with a fixed seed created once and shared by the
+//     whole recursion, so runs are reproducible.
 //  3. Partition the range with the two-cursor scheme described above,
-//     comparing against the pivot's value.
-//  4. Recurse on the two sides of the split.
+//     comparing against the pivot's value. After swapping the two stopped
+//     items, advance both cursors one step inward before resuming;
+//     without that advance, equal items can leave both cursors stopped
+//     forever.
+//  4. When the cursors cross, the split is the right cursor's final
+//     position. Recurse on the two inclusive ranges ending at the split
+//     and beginning just after it. No item is guaranteed to be in its
+//     final position by the split itself.
 //
 // Notes:
 //   - Sorted or all-equal input is the classic worst case for a

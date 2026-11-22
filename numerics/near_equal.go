@@ -17,7 +17,7 @@ import "math"
 // most the tolerance times the larger of the two magnitudes. Pure relative
 // comparison still has two edge cases worth handling deliberately. First,
 // near zero the relative test is meaningless: relative to 1e-300, even
-// 1e-299 is a factor of ten away, so if the difference is smaller than an
+// 1e-299 is a factor of ten away, so if the difference is at most an
 // absolute floor it counts as near regardless. Second, infinities of the
 // same sign should compare near (they are the same value), while NaN
 // compares near nothing, not even itself.
@@ -39,7 +39,9 @@ import "math"
 //  2. Compute the absolute difference and compare it against the tolerance
 //     scaled by the larger magnitude of a and b.
 //  3. Also compare the absolute difference against an absolute floor so
-//     values near zero are not held to a relative standard.
+//     values near zero are not held to a relative standard. A difference
+//     exactly equal to the floor counts as near, just as a difference
+//     exactly equal to the relative bound does.
 //
 // Convention (matches the tests): the tolerance is relative (a fraction,
 // not an ulp count) and the floor is fixed by the caller. Either argument

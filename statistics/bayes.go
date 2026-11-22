@@ -35,8 +35,9 @@ package statistics
 //     failure, not divided through.
 //
 // Steps:
-//  1. Validate: the prior sums to one; every row of the likelihood table
-//     sums to one; the observation index is in range.
+//  1. Validate: the prior sums to one within an absolute tolerance of
+//     one part in a million; every row of the likelihood table does the
+//     same; the observation index is in range.
 //  2. Compute the unnormalized posterior weight of each hypothesis: prior
 //     times the likelihood of the observation under that hypothesis.
 //  3. Sum the weights. If the sum is zero, the observation is impossible

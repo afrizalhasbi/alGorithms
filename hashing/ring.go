@@ -33,8 +33,10 @@ package hashing
 //  - circle / number line: the 32-bit unsigned hash range, treated as
 //     wrapping: the value just past the top is zero again.
 //  - mark: one (hash value, node) pair on the circle. One node has
-//     one mark per replica, stamped under slightly different names
-//     (suffix the node name with the replica index before hashing).
+//     one mark per replica, stamped under slightly different names:
+//     append a separator and the decimal replica index to the node
+//     name before hashing. This exercise uses the node name, then '#',
+//     then the replica index, with no padding.
 //  - owner of a key: the node of the first mark at or after the key's
 //     hash, moving in increasing hash order, wrapping to the first
 //     mark if the hash is past the last one.

@@ -28,9 +28,11 @@ package hashing
 // formula gives it.
 //
 // Deriving several hash functions from one base hash is standard
-// (the Kirsch-Mitzenmacher trick): take one hash of the item, split
-// or mix it into two values, and combine them with the function's
-// index to produce each variant. No separate hash functions needed.
+// (the Kirsch-Mitzenmacher trick): take one hash of the item and
+// derive a second value from it, then combine the two with the
+// function's index to produce each variant. No separate hash
+// functions are needed. This exercise uses the base hash and the base
+// hash rotated left by sixteen bits as the two values.
 //
 // Definitions:
 //  - bit array: the flat array of m bits, indexed 0..m-1, all clear
@@ -39,12 +41,15 @@ package hashing
 //  - variant hashes (the k of them): the k positions derived from the
 //     base hash by the Kirsch-Mitzenmacher combination described in the
 //     background — the same derivation, with the same k, at add time
-//     and query time.
+//     and query time. Variant number j, counting from zero, is the base
+//     hash plus j times the rotated hash, reduced modulo the bit count.
 //  - false positive / false negative: "present" reported for an item
 //     never added (allowed, bounded by fpRate), and "absent" reported
 //     for an added item (forbidden, structurally impossible).
 //  - sizing formula: from n (expected items) and the target rate p,
-//     m = -n*ln(p)/ln(2)^2 and k = (m/n)*ln(2), rounded.
+//     m = -n*ln(p)/ln(2)^2 and k = (m/n)*ln(2), each rounded to the
+//     nearest integer. The bit count is at least one, and the number of
+//     hash functions is at least one.
 //
 // Steps:
 //  1. Construction: from the expected item count and the target

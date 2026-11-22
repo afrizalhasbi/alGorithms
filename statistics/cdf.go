@@ -35,10 +35,11 @@ package statistics
 //     bug, which the test detects structurally.
 //
 // Steps:
-//  1. Validate: every probability is at least zero.
+//  1. Validate: the list is non-empty and every probability is at least
+//     zero. Otherwise return no result with a false success flag.
 //  2. Accumulate the running sum into the output slice.
-//  3. Set the final entry to exactly one (given at least one input
-//     probability; the caller supplies a distribution that sums to one).
+//  3. Set the final entry to exactly one. The caller supplies a
+//     distribution that sums to one.
 //
 // Convention (matches the tests): the returned slice has the same length
 // as the input; the input is not mutated; the output is non-decreasing

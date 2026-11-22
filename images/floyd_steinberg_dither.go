@@ -30,7 +30,9 @@ import "alGorithms/internal/bitmap"
 // channel and clamp after quantization, not before.
 //
 // Definitions:
-//  - quantization: mapping each channel value to nearest of {0, 255}.
+//  - quantization: mapping each channel value to nearest of {0, 255}:
+//     below 128 becomes 0, 128 and above becomes 255. The input is an
+//     integer, so there is no exact halfway value.
 //  - error: old value minus quantized value, per channel.
 //  - diffusion: adding the weighted error to the four future
 //     neighbors at the fixed 7/16, 3/16, 5/16, 1/16 positions.

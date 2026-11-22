@@ -20,9 +20,12 @@ package calculus
 // derivatives, hardcoded here in the test suite, and it degrades badly
 // when the curvature is near zero — the step length explodes, the
 // iterate flies off, and the budget-failure response from NewtonRoot
-// applies unchanged. The non-convergence case is part of the fixture:
-// starting Newton on a maximum sends it away from the minimum, and the
-// test requires an honest failure.
+// applies unchanged. Non-positive curvature is also a failure: a flat
+// second derivative makes the step undefined, and a negative one says
+// the current point is locally a maximum, not a minimum. The fixture
+// tests the flat case; the negative case follows from the same rule.
+// The function value is accepted for interface symmetry but is not used;
+// the two derivatives carry the whole iteration.
 //
 // Definitions:
 //  - stationary point: where the first derivative is zero. What Newton
@@ -34,25 +37,26 @@ package calculus
 //     (locally a maximum).
 //  - Newton step: current point minus df over d2f, both evaluated at
 //     the current point.
-//  - flat curvature: d2f at or near zero — the step length explodes.
-//     Reported as failure, same as the budget case.
+//  - flat or negative curvature: d2f at or below zero — the step is
+//     undefined or points toward a maximum. Reported as failure, same as
+//     the budget case.
 //
 // Steps:
-//  1. Validate: the second derivative at the starting point is not
-//     zero (or denormal-close to it).
+//  1. Validate: the second derivative at the starting point is strictly
+//     positive. Zero or negative curvature is failure.
 //  2. Step: the new point is the current point minus the first
 //     derivative over the second derivative.
 //  3. Stop when the absolute step, or the magnitude of the first
-//     derivative, is within the tolerance; stop with failure on flat
-//     curvature or an exhausted budget.
+//     derivative, is within the tolerance; stop with failure on
+//     non-positive curvature at any iterate or an exhausted budget.
 //
 // Convention (matches the tests): the fixture stores minimizers computed
-// to forty digits by an independent library, and the expected iteration
-// counts, which are materially smaller than the secant and gradient
-// methods on the same problems — that difference is the lesson.
+// to forty digits by an independent library. The convergence is to be
+// materially faster than the secant and gradient methods on the same
+// problems — that difference is the lesson.
 //
-// Expected: quadratic convergence near a minimum, three evaluations per
-// iteration
+// Expected: quadratic convergence near a minimum, two evaluations per
+// iteration (the first and second derivatives)
 func NewtonMinimize(f, df, d2f func(float64) float64, x0, tol float64, maxIter int) (float64, bool) {
 	// TODO: implement
 	return 0, false

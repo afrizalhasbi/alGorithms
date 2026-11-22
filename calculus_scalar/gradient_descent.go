@@ -43,14 +43,15 @@ import "math"
 //  1. Iterate: the new point is the current point minus the step size
 //     times the derivative at the current point.
 //  2. Stop when the absolute change in the point is within the
-//     tolerance; stop with failure when the budget is exhausted.
+//     tolerance; stop with failure when the budget is exhausted. On
+//     failure, return the last point reached along with the failure
+//     flag; the caller must not treat it as a minimizer.
 //
 // Convention (matches the tests): derivatives are hardcoded in the test;
 // the fixture stores minimizers computed in closed form and the expected
 // per-step shrink factors.
 //
-// Expected: linear convergence, two evaluations per iteration (or one,
-// if the derivative is reused from the same call)
+// Expected: linear convergence, one derivative evaluation per iteration
 func GradientDescent(df func(float64) float64, x0, step, tol float64, maxIter int) (float64, bool) {
 	var lastX = x0
 	for range maxIter {
