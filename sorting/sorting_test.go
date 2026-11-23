@@ -82,8 +82,9 @@ func checkSorting(t *testing.T, name string, sort func([]int) []int) {
 			// file:line prefix or indentation.
 			fmt.Printf("[FAIL] %s: in: %s, got: %s, want: %s\n", name, inStr, preview(got), preview(want))
 			t.Fail()
+		} else {
+			okPrint("%s %s", name, inStr)
 		}
-		okPrint("%s %s/%s/%s", name, inStr, preview(got), preview(want))
 	}
 	for _, in := range fixedCases {
 		check(in)
