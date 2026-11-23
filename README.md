@@ -16,7 +16,7 @@ An algorithm is done only when both boxes are checked:
 | BubbleSort | easy | ✓ | 02-11-2026 |
 | InsertionSort | easy | ✓ | 02-11-2026 |
 | SelectionSort | easy | ✓ | 02-11-2026 |
-| MergeSort | medium | - |
+| MergeSort | medium | ✓ | 23-11-2026 |
 | QuickSort | medium | - |
 | HeapSort | medium | ✓ | 02-11-2026 |
 | RadixSort | hard | - |

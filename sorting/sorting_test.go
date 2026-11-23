@@ -65,7 +65,7 @@ var fixedCases = [][]int{
 // okPrint prints a success line styled like the failure lines: no
 // file:line prefix or indentation, always visible.
 func okPrint(format string, args ...any) {
-	fmt.Printf("ok: "+format+"\n", args...)
+	fmt.Printf("[OK]: "+format+"\n", args...)
 }
 
 // checkSorting runs every correctness case against the stdlib oracle.
@@ -80,7 +80,7 @@ func checkSorting(t *testing.T, name string, sort func([]int) []int) {
 		if !slices.Equal(got, want) {
 			// Print manually (then just fail) so the output has no
 			// file:line prefix or indentation.
-			fmt.Printf("%s: in: %s, got: %s, want: %s\n", name, inStr, preview(got), preview(want))
+			fmt.Printf("[FAIL] %s: in: %s, got: %s, want: %s\n", name, inStr, preview(got), preview(want))
 			t.Fail()
 		}
 		okPrint("%s %s/%s/%s", name, inStr, preview(got), preview(want))

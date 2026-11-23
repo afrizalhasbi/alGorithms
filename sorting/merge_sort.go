@@ -19,15 +19,15 @@ package sorting
 // right half.
 //
 // Definitions:
-//  - merge: combining two already-sorted slices into one sorted slice.
+//   - merge: combining two already-sorted slices into one sorted slice.
 //     It is the only place items move; the sort itself is just
 //     recursion plus merges.
-//  - left half / right half: the two pieces of the split. "Left" means
+//   - left half / right half: the two pieces of the split. "Left" means
 //     earlier positions in the original slice, which is what stability
 //     depends on.
-//  - front item: the first not-yet-consumed item of a half during the
+//   - front item: the first not-yet-consumed item of a half during the
 //     merge. Each comparison consumes exactly one front item.
-//  - buffer: the auxiliary slice in step 3. Only the left half is
+//   - buffer: the auxiliary slice in step 3. Only the left half is
 //     copied into it; the right half stays in place.
 //
 // Steps:
@@ -52,6 +52,37 @@ package sorting
 // Expected: best/average/worst O(n log n)
 // Input: mutated in place
 func MergeSort(xs []int) []int {
-	// TODO: implement
-	return nil
+	if len(xs) <= 1 {
+		return xs
+	}
+	var mid = len(xs) / 2
+	var lhs = MergeSort(xs[:mid])
+	var l_i = 0
+	var rhs = MergeSort(xs[mid:])
+	var r_i = 0
+	var full = make([]int, len(xs))
+	var i = 0
+	for i < len(full) {
+		if l_i >= len(lhs) {
+			full[i] = rhs[r_i]
+			r_i++
+			i++
+			continue
+		}
+		if r_i >= len(rhs) {
+			full[i] = lhs[l_i]
+			l_i++
+			i++
+			continue
+		}
+		if lhs[l_i] <= rhs[r_i] {
+			full[i] = lhs[l_i]
+			l_i++
+		} else {
+			full[i] = rhs[r_i]
+			r_i++
+		}
+		i++
+	}
+	return full
 }
