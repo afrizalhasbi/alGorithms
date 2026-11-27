@@ -118,3 +118,37 @@ An algorithm is done only when both boxes are checked:
 | Echo | easy | - |
 | LinearResample | medium | - |
 | MovingAverageLowpass | medium | - |
+
+## graphs
+
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
+| UnionFind | easy | - |
+| BFS | easy | - |
+| DFS | easy | - |
+| ConnectedComponents | easy | - |
+| Bipartite | medium | - |
+| CycleDetection | medium | - |
+| TopologicalSort | medium | - |
+| Dijkstra | medium | - |
+| BellmanFord | medium | - |
+| FloydWarshall | medium | - |
+| Kruskal | medium | - |
+| Prim | medium | - |
+| TarjanSCC | hard | - |
+| ArticulationPointsBridges | hard | - |
+| EdmondsKarp | hard | - |
+
+## trees
+
+| Algorithm | Difficulty | Done | Date |
+|---|---|---|---|
+| Traversals | easy | - |
+| BST | medium | - |
+| MorrisTraversal | medium | - |
+| Treap | medium | - |
+| SegmentTree | medium | - |
+| Fenwick | medium | - |
+| Trie | medium | - |
+| AVL | hard | - |
+| LCA | hard | - |
